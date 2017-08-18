@@ -1,10 +1,12 @@
+/* This code adds two vectors */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils/cheader.h"
 
 #define SIZE 100000000
 
-void add_vectors(int *c, int *a, int *b, int size) {
+void add_vectors(int *c, int* a, int *b, int size) {
 	int i;
 	
 	for (i = 0; i < size; i++) {
@@ -13,9 +15,10 @@ void add_vectors(int *c, int *a, int *b, int size) {
 }
 
 int main(int argc, char* argv[]) {
-	int j, *a, *b, *c;
+	int i, j, *a, *b, *c;
 	double ms;
-	
+	long r;
+
 	a = (int*) malloc(sizeof(int) * SIZE);
 	fill_array(a, SIZE);
 	display_array("a", a);
@@ -28,14 +31,13 @@ int main(int argc, char* argv[]) {
 	
 	printf("Starting...\n");
 	ms = 0;
-	for (j = 1; j <= N; j++) {
+	for (j = 0; j < N; j++) {
 		start_timer();
 		add_vectors(c, a, b, SIZE);
 		ms += stop_timer();
 	}
-	
 	display_array("c", c);
-	printf("avg time = %.5lf ms\n", (ms / N));
+	printf("avg time = %.5lf\n", (ms/N));
 	
 	free(a);
 	free(b);
