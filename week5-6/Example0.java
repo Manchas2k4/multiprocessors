@@ -2,7 +2,6 @@
 import java.util.concurrent.RecursiveTask;
 
 public class Example0 extends RecursiveTask<Double> {
-	private static final long serialVersionUID = 795529753930114947L;
 	private static final long MIN = 100_000;
 	private int start, end;
 	private double width;

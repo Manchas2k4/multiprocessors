@@ -2,7 +2,6 @@
 import java.util.concurrent.RecursiveTask;
 
 public class Example1 extends RecursiveTask<Long> {
-	private static final long serialVersionUID = 795529753930114947L;
 	private static final long MIN = 100_000;
 	private int array[], start, end;
 	
