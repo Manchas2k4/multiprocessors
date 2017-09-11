@@ -1,41 +1,28 @@
-/* This code will generate a fractal image. */
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
+/* This code calculates the factorial of a integer number. */
+
+import java.math.BigInteger;
 
 public class MainExample6 {
-	private static final int MAXTHREADS = 4;
+	private static final int NUM = 100_000;
+	private static final int MAXTHREADS = Runtime.getRuntime().availableProcessors();
 	
-	public static void main(String args[]) throws Exception {
+	public static void main(String args[]) {
 		Example6 threads[];
 		int block;
 		long startTime, stopTime;
 		double acum = 0;
+		BigInteger result = BigInteger.valueOf(1);
 		
-		if (args.length != 1) {
-			System.out.println("usage: java Example6 image_file");
-			System.exit(-1);
-		}
-		
-		final String fileName = args[0];
-		File srcFile = new File(fileName);
-        final BufferedImage source = ImageIO.read(srcFile);
-		
-		int w = source.getWidth();
-		int h = source.getHeight();
-		int src[] = source.getRGB(0, 0, w, h, null, 0, w);
-		int dest[] = new int[src.length];
-		
-		block = src.length / MAXTHREADS;
+		block = NUM / MAXTHREADS;
 		threads = new Example6[MAXTHREADS];
 		
 		acum = 0;
 		for (int j = 1; j <= Utils.N; j++) {
 			for (int i = 0; i < threads.length; i++) {
 				if (i != threads.length - 1) {
-					threads[i] = new Example6(src, dest, w, h, (i * block), ((i + 1) * block));
+					threads[i] = new Example6((i + 1) * block, (i + 2) * block);
 				} else {
-					threads[i] = new Example6(src, dest, w, h, (i * block), src.length);
+					threads[i] = new Example6((i + 1) * block, NUM);
 				}
 			}
 			
@@ -53,23 +40,13 @@ public class MainExample6 {
 			stopTime = System.currentTimeMillis();
 			acum +=  (stopTime - startTime);
 		}
+		
+		result = BigInteger.valueOf(1);
+		for (int i = 0; i < threads.length; i++) {
+			result = result.multiply(threads[i].getResult());
+		}
+				
+		System.out.println("factorial(" + NUM + ") = " + result);
 		System.out.printf("avg time = %.5f\n", (acum / Utils.N));
-		
-		final BufferedImage destination = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		destination.setRGB(0, 0, w, h, dest, 0, w);
-		
-		
-		
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-               ImageFrame.showImage("Original - " + fileName, source);
-            }
-        });
-		
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-               ImageFrame.showImage("Blur - " + fileName, destination);
-            }
-        });
 	}
 }

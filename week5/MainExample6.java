@@ -2,7 +2,7 @@
 import java.math.BigInteger;
 import java.util.concurrent.ForkJoinPool;
 
-public class MainExample4 {
+public class MainExample6 {
 	private static final int NUM = 100_000;
 	private static final int MAXTHREADS = Runtime.getRuntime().availableProcessors();
 	
@@ -17,7 +17,7 @@ public class MainExample4 {
 			startTime = System.currentTimeMillis();
 			
 			pool = new ForkJoinPool(MAXTHREADS);
-			result = pool.invoke(new Example4(1, NUM));
+			result = pool.invoke(new Example6(1, NUM));
 			
 			stopTime = System.currentTimeMillis();
 			acum +=  (stopTime - startTime);

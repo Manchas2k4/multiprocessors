@@ -2,13 +2,13 @@
 import java.awt.image.BufferedImage;
 import java.util.concurrent.RecursiveAction;
 
-public class Example5 extends RecursiveAction {
+public class Example4 extends RecursiveAction {
 	private static final float SCALEX = 1.5f;
 	private static final float SCALEY = 1.5f;
 	private static final long MIN = 10_000;
 	private int array[], width, height, start, end;
 	
-	public Example5(int array[], int width, int height, int start, int end) {
+	public Example4(int array[], int width, int height, int start, int end) {
 		this.array = array;
 		this.width = width;
 		this.height = height;
@@ -55,14 +55,14 @@ public class Example5 extends RecursiveAction {
 	
 	@Override
 	protected void compute() {
-		if ( (this.end - this.start) <= Example5.MIN ) {
+		if ( (this.end - this.start) <= Example4.MIN ) {
 			computeDirectly();
 			
 		} else {
 			int middle = (end + start) / 2;
 			
-			invokeAll(new Example5(array, width, height, start, middle), 
-					  new Example5(array, width, height, middle, end));
+			invokeAll(new Example4(array, width, height, start, middle), 
+					  new Example4(array, width, height, middle, end));
 		}
 	}
 }

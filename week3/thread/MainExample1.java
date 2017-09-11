@@ -2,7 +2,7 @@
 
 public class MainExample1 {
 	private static int SIZE = 300_000_000;
-	private static final int MAXTHREADS = 4;
+	private static final int MAXTHREADS = Runtime.getRuntime().availableProcessors();
 	
 	public static void main(String args[]) {
 		Example1 threads[];

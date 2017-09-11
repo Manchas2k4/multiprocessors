@@ -1,18 +1,28 @@
 /* This code will generate a fractal image. */
 import java.awt.image.BufferedImage;
-//import java.io.File;
-//import javax.imageio.ImageIO;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 public class MainExample5 {
-	private static final int WIDTH = 1024;
-	private static final int HEIGHT = 768;
-	
-	public static void main(String args[]) {
+	public static void main(String args[]) throws Exception {
 		long startTime, stopTime;
 		double acum = 0;
 		
-		int array[] = new int[WIDTH * HEIGHT];
-		Example5 e = new Example5(array, WIDTH, HEIGHT);
+		if (args.length != 1) {
+			System.out.println("usage: java Example5 image_file");
+			System.exit(-1);
+		}
+		
+		final String fileName = args[0];
+		File srcFile = new File(fileName);
+        final BufferedImage source = ImageIO.read(srcFile);
+		
+		int w = source.getWidth();
+		int h = source.getHeight();
+		int src[] = source.getRGB(0, 0, w, h, null, 0, w);
+		int dest[] = new int[src.length];
+		
+		Example5 e = new Example5(src, dest, w, h);
 		acum = 0;
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
@@ -21,12 +31,20 @@ public class MainExample5 {
 			acum += (stopTime - startTime);
 		}
 		System.out.printf("avg time = %.5f\n", (acum / Utils.N));
+		final BufferedImage destination = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		destination.setRGB(0, 0, w, h, dest, 0, w);
 		
-		final BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		bi.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
+		
+		
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-               ImageFrame.showImage("CPU Julia | c(-0.8, 0.156)", bi);
+               ImageFrame.showImage("Original - " + fileName, source);
+            }
+        });
+		
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+               ImageFrame.showImage("Blur - " + fileName, destination);
             }
         });
 	}

@@ -3,7 +3,7 @@ import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 
-public class MainExample5 {
+public class MainExample4 {
 	private static final int WIDTH = 1024;
 	private static final int HEIGHT = 768;
 	private static final int MAXTHREADS = Runtime.getRuntime().availableProcessors();
@@ -20,7 +20,7 @@ public class MainExample5 {
 			startTime = System.currentTimeMillis();
 			
 			pool = new ForkJoinPool(MAXTHREADS);
-			pool.invoke(new Example5(array, WIDTH, HEIGHT, 0, array.length));
+			pool.invoke(new Example4(array, WIDTH, HEIGHT, 0, array.length));
 			
 			stopTime = System.currentTimeMillis();
 			acum +=  (stopTime - startTime);

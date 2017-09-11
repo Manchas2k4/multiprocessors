@@ -4,7 +4,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.util.concurrent.ForkJoinPool;
 
-public class MainExample6 {
+public class MainExample5 {
 	private static final int MAXTHREADS = Runtime.getRuntime().availableProcessors();
 	
 	public static void main(String args[]) throws Exception {
@@ -13,7 +13,7 @@ public class MainExample6 {
 		double acum = 0;
 		
 		if (args.length != 1) {
-			System.out.println("usage: java Example6 image_file");
+			System.out.println("usage: java Example5 image_file");
 			System.exit(-1);
 		}
 		
@@ -31,7 +31,7 @@ public class MainExample6 {
 			startTime = System.currentTimeMillis();
 			
 			pool = new ForkJoinPool(MAXTHREADS);
-			pool.invoke(new Example6(src, dest, w, h, 0, src.length));
+			pool.invoke(new Example5(src, dest, w, h, 0, src.length));
 			
 			stopTime = System.currentTimeMillis();
 			acum +=  (stopTime - startTime);

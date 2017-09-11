@@ -3,7 +3,7 @@ import java.util.Arrays;
 
 public class MainExample3 {
 	private static int SIZE = 10_000;
-	private static final int MAXTHREADS = 4;
+	private static final int MAXTHREADS = Runtime.getRuntime().availableProcessors();
 	
 	public static void main(String args[]) {
 		Example3 threads[];

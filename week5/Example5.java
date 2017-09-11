@@ -4,12 +4,12 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.util.concurrent.RecursiveAction;
 
-public class Example6 extends RecursiveAction {
+public class Example5 extends RecursiveAction {
 	private static final int BLUR_WINDOW = 15;
 	private static final long MIN = 10_000;
 	private int src[], dest[], width, height, start, end;
 	
-	public Example6(int src[], int dest[], int width, int height, int start, int end) {
+	public Example5(int src[], int dest[], int width, int height, int start, int end) {
 		this.src = src;
 		this.dest = dest;
 		this.width = width;
@@ -59,14 +59,14 @@ public class Example6 extends RecursiveAction {
 	
 	@Override
 	protected void compute() {
-		if ( (this.end - this.start) <= Example6.MIN ) {
+		if ( (this.end - this.start) <= Example5.MIN ) {
 			computeDirectly();
 			
 		} else {
 			int middle = (end + start) / 2;
 			
-			invokeAll(new Example6(src, dest, width, height, start, middle), 
-					  new Example6(src, dest, width, height, middle, end));
+			invokeAll(new Example5(src, dest, width, height, start, middle), 
+					  new Example5(src, dest, width, height, middle, end));
 		}
 	}
 }
