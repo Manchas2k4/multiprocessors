@@ -9,6 +9,7 @@
 void add_vectors(int *c, int* a, int *b, int size) {
 	int i;
 	
+	#pragma omp parallel for private(i) shared(a, b, c, size)
 	for (i = 0; i < size; i++) {
 		*(c + i) = *(a + i) + *(b + i);
 	}
