@@ -36,13 +36,13 @@ void blur_pixel(IplImage *src, IplImage *dest, int ren, int col) {
 	
 void blur(IplImage *src, IplImage *dest) {
 	int index, size, step;
-    int ren, col;
     
     size = src->width * src->height;
     step = src->widthStep / sizeof(uchar);
+    #pragma omp parallel for private(index) shared(src, dest, size, step)
     for (index = 0; index < size; index++) {
-    	ren = index / src->width;
-    	col = index % src->width;
+    	int ren = index / src->width;
+    	int col = index % src->width;
     	blur_pixel(src, dest, ren, col);
     }
 }

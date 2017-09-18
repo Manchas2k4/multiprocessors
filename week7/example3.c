@@ -9,10 +9,11 @@
 
 void enumeration_sort(int *array, int size, int copy) {
 	int *temp = (int *) malloc(sizeof(int) * size);
-	int i, j, count;
+	int i;
 
+	#pragma omp parallel for private(i) shared(size, array, temp)
 	for (i = 0; i < size; i++) {
-		count = 0;
+		int j, count = 0;
 		for (j = 0; j < size; j++) {
 			if (array[j] < array[i]) {
 				count++;

@@ -40,7 +40,7 @@ int julia_value(int x, int y, int width, int height) {
     Complex aux;
  
     for (k = 0; k < 200; k++) {
-        mult(&aux, &a, &a);
+        mult(&aux, &a, &a); // a = a^2 + c
         add(&a, &aux, &c);
         if (magnitude2(&a) > 1000) {
             return 0;
@@ -51,15 +51,15 @@ int julia_value(int x, int y, int width, int height) {
  
 void build_julia_set(IplImage* img) {
     int index, size, step;
-    int ren, col, value;
     
     size = img->width * img->height;
     step = img->widthStep / sizeof(uchar);
+    #pragma omp parallel for private(index) shared(img, size, step)
     for (index = 0; index < size; index++) {
-    	ren = index / img->width;
-    	col = index % img->width;
+    	int ren = index / img->width;
+    	int col = index % img->width;
     	
-    	value = julia_value(col, ren, img->width, img->height);
+    	int value = julia_value(col, ren, img->width, img->height);
     	
     	img->imageData[(ren * step) + (col * img->nChannels) + RED] = (unsigned char) (255 * (0.4 * value));
     	img->imageData[(ren * step) + (col * img->nChannels) + GREEN] = (unsigned char) (255 * (0.5 * value));
