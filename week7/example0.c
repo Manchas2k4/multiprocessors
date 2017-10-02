@@ -6,7 +6,7 @@
 #define NUM_RECTS	100000000
 
 int main(int argc, char* argv[]) {
-	double width, area, ms;
+	double mid, height, width, area, ms;
 	double sum;
 	int i, j;
 
@@ -17,12 +17,14 @@ int main(int argc, char* argv[]) {
 
 		sum = 0;
 		width = 1.0 / (double) NUM_RECTS;
-		#pragma omp parallel for private(i) shared(width) reduction(+:sum)
+		
+		#pragma omp parallel for private(i, mid, height) shared(width) reduction(+:sum)
 		for (i = 0; i < NUM_RECTS; i++) {
-			double mid = (i + 0.5) * width;
-			double height = 4.0 / (1.0 + (mid * mid));
+			mid = (i + 0.5) * width;
+			height = 4.0 / (1.0 + (mid * mid));
 			sum += height;
 		}
+		
 		area = width * sum;
 
 		ms += stop_timer();
