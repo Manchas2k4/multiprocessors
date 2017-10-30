@@ -4,7 +4,7 @@
 #include <device_launch_parameters.h>
 #include "utils/cheader.h"
 
-#define SIZE (32*1024)
+#define SIZE (2048*2048)
 
 __global__ void add(int *a, int *b, int *c) {
 	int i = threadIdx.x + (blockIdx.x * blockDim.x);

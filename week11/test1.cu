@@ -7,7 +7,7 @@ __global__ void myKernel(void) {
 
 
 int main() {
-	myKernel<<<1, 1>>>();
+	myKernel<<<2, 1>>>();
 	cudaDeviceSynchronize();
 	printf("Ending...\n");
 	return 0;

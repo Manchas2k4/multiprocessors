@@ -5,7 +5,7 @@ __global__ void add(int *a, int *b, int *c) {
 	*c = *a + *b;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 	int a, b, c;
 	int *d_a, *d_b, *d_c;
 	int size = sizeof(int);

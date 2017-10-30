@@ -5,7 +5,6 @@
 #include "utils/cheader.h"
 
 #define SIZE (2048*2048)
-#define THREADS_X_BLOCKS 512
 
 __global__ void add(int *a, int *b, int *c) {
 	int i = blockIdx.x;
