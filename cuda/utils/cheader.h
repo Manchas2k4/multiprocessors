@@ -49,7 +49,7 @@ void fill_array(int *array, int size) {
 	}
 }
 
-void display_array(char *text, int *array) {
+void display_array(const char *text, int *array) {
 	int i;
 
 	printf("%s = [%4i", text, array[0]);
