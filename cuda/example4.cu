@@ -1,12 +1,9 @@
 /* This code will generate a fractal image. Uses OpenCV, to compile:
   nvcc example4-4.cu -lGL -lGLU -lglut */
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <cuda_runtime.h>
-#include <device_launch_parameters.h>
+#include <opencv/highgui.h>
 #include "utils/cheader.h"
-#include "utils/cpu_bitmap.h"
 
 #define WIDTH 	1024
 #define HEIGHT 	768
@@ -46,17 +43,16 @@ __device__ int julia_value(int x, int y, int width, int height) {
 	return 1;
 }
 
-__global__ void julia_set(unsigned char *ptr, int width, int height) {
-    int x = blockIdx.x;
-    int y = blockIdx.y;
-    int offset = x + y * gridDim.x;
+__global__ void julia_set(unsigned char *img, int width, int height, int step, int channels) {
+    int col = threadIdx.x;
+    int ren = blockIdx.x;
 
     // now calculate the value at that position
-    int value = julia_value(x, y, width, height);
-    ptr[offset*4 + RED] = (unsigned char) (255 * (0.4 * value));
-    ptr[offset*4 + GREEN] = (unsigned char) (255 * (0.5 * value));
-    ptr[offset*4 + BLUE] = (unsigned char) (255 * (0.7 * value));
-    ptr[offset*4 + ALPHA] = 255;
+    int value = julia_value(col, ren, width, height);
+    img[(ren * step) + (col * channels) + RED] = (unsigned char) (255 * (0.4 * value));
+    img[(ren * step) + (col * channels) + GREEN] = (unsigned char) (255 * (0.5 * value));
+    img[(ren * step) + (col * channels) + BLUE] = (unsigned char) (255 * (0.7 * value));
+    img[(ren * step) + (col * channels) + ALPHA] = 255;
 }
 
 struct DataBlock {
@@ -64,28 +60,32 @@ struct DataBlock {
 };
 
 int main(int argc, char* argv[]) {
-	DataBlock data;
-    CPUBitmap bitmap(WIDTH, HEIGHT, &data );
-    unsigned char *dev_bitmap;
-    dim3 grid(WIDTH, HEIGHT);
+	IplImage* img=cvCreateImage(cvSize(WIDTH, HEIGHT), IPL_DEPTH_8U, 3);
+	unsigned char *dev_img;
     double ms;
+    int size, step;
 
-	cudaMalloc((void**) &dev_bitmap, bitmap.image_size());
-	data.dev_bitmap = dev_bitmap;
-
-	printf("Starting...\n");
+	size = img->width * img->height * img->nChannels * sizeof(uchar);
+	cudaMalloc((void**) &dev_img, size);
+	
 	ms = 0;
+	step = img->widthStep / sizeof(uchar);
+	printf("Starting...\n");
 	for (int i = 0; i < N; i++) {
 		start_timer();
-		julia_set<<<grid, 1>>>(dev_bitmap, WIDTH, HEIGHT);
+		julia_set<<<img->height, img->width>>>(dev_img, img->width, img->height, step, img->nChannels);
 		ms += stop_timer();
 	}
 
-	cudaMemcpy(bitmap.get_ptr(), dev_bitmap, bitmap.image_size(), cudaMemcpyDeviceToHost); 
-	cudaFree(dev_bitmap);
+	cudaMemcpy(img->imageData, dev_img, size, cudaMemcpyDeviceToHost);
+	
+	cudaFree(dev_img);
 	
 	printf("avg time = %.5lf ms\n",  ms/N);
-	bitmap.display_and_exit();
+	
+	cvShowImage("GPU Julia | c(-0.8, 0.156)", img);
+    cvWaitKey(0);
+    cvDestroyWindow("GPU Julia | c(-0.8, 0.156)");
+    
 	return 0;
 }
-

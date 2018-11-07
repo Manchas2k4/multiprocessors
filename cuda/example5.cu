@@ -1,5 +1,5 @@
 /* This code will generate a fractal image. Uses OpenCV, to compile:
-   gcc example5.c `pkg-config --cflags --libs opencv`  */
+   nvcc example5.cu `pkg-config --cflags --libs opencv`  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <opencv/highgui.h>
@@ -9,49 +9,37 @@
 
 typedef enum color {BLUE, GREEN, RED} Color;
 
-step = src->widthStep / sizeof(uchar);
-
-__global__ void blur(unsigned char *src, unsigned char *dest, int width, int heigth, int num_bytes, int mask_size) {
-	int x = blockIdx.x * blockDim.x + threadIdx.x;  
-	int y = blockIdx.y * blockDim.y + threadIdx.y;  
-	int result = 0;
-	int side_pixels = (mask_size - 1) / 2;
-	int cells = (mask_size * mask_size);
+__global__ void blur(unsigned char *src, unsigned char *dest, int width, int heigth, int blur_window, int step, int channels) { 
+	int i, j, side_pixels, cells;
+	int ren, col, tmp_ren, tmp_col;
+	float r, g, b;
 	
+	ren = blockIdx.x;
+	col = threadIdx.x;
+	side_pixels = (blur_window - 1) / 2;
+	cells = (blur_window * blur_window);
 	r = 0; g = 0; b = 0;
 	for (i = -side_pixels; i <= side_pixels; i++) {
 		for (j = -side_pixels; j <= side_pixels; j++) {
-			tmp_ren = MIN( MAX(ren + i, 0), src->height - 1 );
-			tmp_col = MIN( MAX(col + j, 0), src->width - 1);
+			tmp_ren = MIN( MAX(ren + i, 0), heigth - 1 );
+			tmp_col = MIN( MAX(col + j, 0), width - 1);
 			
-			r += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + RED];
-			g += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + GREEN];
-			b += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + BLUE];
+			r += (float) src[(tmp_ren * step) + (tmp_col * channels) + RED];
+			g += (float) src[(tmp_ren * step) + (tmp_col * channels) + GREEN];
+			b += (float) src[(tmp_ren * step) + (tmp_col * channels) + BLUE];
 		}
 	}
 	
-	dest->imageData[(ren * step) + (col * dest->nChannels) + RED] =  (unsigned char) (r / cells);
-	dest->imageData[(ren * step) + (col * dest->nChannels) + GREEN] = (unsigned char) (g / cells);
-	dest->imageData[(ren * step) + (col * dest->nChannels) + BLUE] = (unsigned char) (b / cells);
-}
-	
-void blur(IplImage *src, IplImage *dest) {
-	int index, size, step;
-    int ren, col;
-    
-    size = src->width * src->height;
-    step = src->widthStep / sizeof(uchar);
-    for (index = 0; index < size; index++) {
-    	ren = index / src->width;
-    	col = index % src->width;
-    	blur_pixel(src, dest, ren, col);
-    }
+	dest[(ren * step) + (col * channels) + RED] =  (unsigned char) (r / cells);
+	dest[(ren * step) + (col * channels) + GREEN] = (unsigned char) (g / cells);
+	dest[(ren * step) + (col * channels) + BLUE] = (unsigned char) (b / cells);
 }
 
 int main(int argc, char* argv[]) {
-	int i;
-	double acum; 	
-	
+	int i, step, size;
+	double acum; 
+	unsigned char *dev_src, *dev_dest;
+		
 	if (argc != 2) {
 		printf("usage: %s source_file\n", argv[0]);
 		return -1;
@@ -64,12 +52,25 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 	
+	size = src->width * src->height * src->nChannels * sizeof(uchar);
+	cudaMalloc((void**) &dev_src, size);
+	cudaMalloc((void**) &dev_dest, size);
+	
+	cudaMemcpy(dev_src, src->imageData, size, cudaMemcpyHostToDevice);
+	
 	acum = 0;
+	step = src->widthStep / sizeof(uchar);
+	printf("Starting...\n");
 	for (i = 0; i < N; i++) {
 		start_timer();
-		blur(src, dest);
+		blur<<<src->height, src->width>>>(dev_src, dev_dest, src->width, src->height, BLUR_WINDOW, step, src->nChannels);
 		acum += stop_timer();
 	}
+	
+	cudaMemcpy(dest->imageData, dev_dest, size, cudaMemcpyDeviceToHost);
+	
+	cudaFree(dev_dest);
+	cudaFree(dev_src);
 	
 	printf("avg time = %.5lf ms\n", (acum / N));
 	
