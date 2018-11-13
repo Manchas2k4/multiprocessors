@@ -9,7 +9,7 @@
 
 typedef enum color {BLUE, GREEN, RED} Color;
 
-void blur_pixel(unsigned char *src, unsigned char *dest, int ren, int col) {
+void blur_pixel(IplImage *src, IplImage *dest, int ren, int col) {
 	int side_pixels, i, j, cells;
 	int tmp_ren, tmp_col, step;
 	float r, g, b;
