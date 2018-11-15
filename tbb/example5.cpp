@@ -1,21 +1,27 @@
 /* This code will generate a fractal image. Uses OpenCV, to compile:
-   g++ example5.cpp `pkg-config --cflags --libs opencv`  */
+   g++ example5.cpp `pkg-config --cflags --libs opencv` -ltbb */
    
 #include <iostream>
 #include <opencv/highgui.h>
+#include <tbb/task_scheduler_init.h>
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
 #include "utils/cppheader.h"
 
-using namespace std;
+using namespace std; 
+using namespace tbb;
 
 const int BLUR_WINDOW = 15;
+const int GRAIN = 10000;
 
 enum color {BLUE, GREEN, RED};
 
 class BlurProcess {
 private:
 	IplImage *src, *dest;
+	int step;
 	
-	void blur_pixel(int ren, int col) {
+	void blur_pixel(int ren, int col) const {
 		int side_pixels, i, j, cells;
 		int tmp_ren, tmp_col, step;
 		float r, g, b;
@@ -42,18 +48,15 @@ private:
 	
 public:
 
-	BlurProcess(IplImage *source, IplImage *destination)
-		:src(source), dest(destination) {}
+	BlurProcess(IplImage *source, IplImage *destination, int theStep)
+		:src(source), dest(destination), step(theStep) {}
 	
-	void doMagic() {
-		int index, size, step;
+	void operator() (const blocked_range<int> &r) const {
 		int ren, col;
 		
-		size = src->width * src->height;
-		step = src->widthStep / sizeof(uchar);
-		for (index = 0; index < size; index++) {
-			ren = index / src->width;
-			col = index % src->width;
+		for (int i = r.begin(); i != r.end(); i++) {
+			ren = i / src->width;
+			col = i % src->width;
 			blur_pixel(ren, col);
 		}
 	}
@@ -61,7 +64,7 @@ public:
 
 int main(int argc, char* argv[]) {
 	Timer t;
-	double acum; 	
+	double ms; 	
 	
 	if (argc != 2) {
 		printf("usage: %s source_file\n", argv[0]);
@@ -75,14 +78,16 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 	
-	BlurProcess bp(src, dest);
-	acum = 0;
+	int size = src->width * src->height;
+	int step = src->widthStep / sizeof(uchar);
+	
+	ms = 0;
 	for (int i = 0; i < N; i++) {
 		t.start();
-		bp.doMagic();
-		acum += t.stop();
+		parallel_for( blocked_range<int>(0, size, GRAIN), BlurProcess(src, dest, step) );
+		ms += t.stop();
 	}
-	cout << "avg time = " << (acum /N) << endl;
+	cout << "avg time = " << (ms /N) << endl;
 	
 	cvShowImage("Lenna (Original)", src);
 	cvShowImage("Lenna (Blur)", dest);
