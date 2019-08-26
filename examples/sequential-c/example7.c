@@ -1,5 +1,5 @@
 /* This code will generate a fractal image. Uses OpenCV, to compile:
-   gcc example4.c `pkg-config --cflags --libs opencv`  */
+   gcc example7.c `pkg-config --cflags --libs opencv`  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <opencv2/core/core.hpp>

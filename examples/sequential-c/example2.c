@@ -1,14 +1,15 @@
-/* This code calculates an IP approximation */
+/* This code calculates an arctan approximation for |x| < 1 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "utils/cheader.h"
 
-#define NUM_RECTS 1e9
+#define LIMIT 1e8
 
 int main(int argc, char* argv[]) {
-	double mid, height, width, area, ms;
-	double sum;
-	int i, j;
+	double sum, ms, one, x = 0.99;
+	int i, j, n;
+	double tmp1, tmp2, tmp3;
 	
 	printf("Starting...\n");
 	ms = 0;
@@ -16,17 +17,15 @@ int main(int argc, char* argv[]) {
 		start_timer();
 		
 		sum = 0;
-		width = 1.0 / (double) NUM_RECTS;
-		for (j = 0; j < NUM_RECTS; j++) {
-			mid = (j + 0.5) * width;
-			height = 4.0 / (1.0 + (mid * mid));
-			sum += height;
+		for (j = 0; j < LIMIT; j++) {
+			one = (j % 2 == 0)? 1.0 : -1.0;
+			n = (2 * j ) + 1;
+			sum = sum + ( (one / n) * pow(x, n) );
 		}
-		area = width * sum;
 		
 		ms += stop_timer();
 	}
-	printf("PI = %.15lf\n", area);
+	printf("arctan(0.99)->(0.78) = %.15lf\n", sum);
 	printf("avg time = %.5lf ms\n", (ms / N));
 	return 0;
 }
