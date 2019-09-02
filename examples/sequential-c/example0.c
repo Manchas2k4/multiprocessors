@@ -6,41 +6,36 @@
 
 #define SIZE 1000000000
 
-double deviation(int *array, int size) {
+double sum_array(int *array, int size) {
+	double acum = 0;
 	int i;
-	double acum, avg;
 	
-	acum = 0;
 	for (i = 0; i < size; i++) {
 		acum += array[i];
 	}
-	avg = acum / size;
-	
-	acum = 0;
-	for (i = 0; i < size; i++) {
-		acum = (array[i] - avg) * (array[i] - avg);
-	}
-	return (sqrt(acum / size));
+	return acum;
 }
 
 int main(int argc, char* argv[]) {
-	int i, j, *array;
+	int i, j, *a;
 	double ms, result;
 	
-	array = (int *) malloc(sizeof(int) * SIZE);
-	random_array(array, SIZE);
-	display_array("array", array);
+	a = (int *) malloc(sizeof(int) * SIZE);
+	fill_array(a, SIZE);
+	display_array("a", a);
 	
 	printf("Starting...\n");
 	ms = 0;
 	for (i = 0; i < N; i++) {
 		start_timer();
 		
-		result = deviation(array, SIZE);
+		result = sum_array(a, SIZE);
 		
 		ms += stop_timer();
 	}
-	printf("S = %.15lf\n", result);
+	printf("sum = %lf\n", result);
 	printf("avg time = %.5lf ms\n", (ms / N));
+	
+	free(a);
 	return 0;
 }
