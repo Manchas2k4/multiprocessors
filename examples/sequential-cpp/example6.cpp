@@ -1,55 +1,110 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "utils/cheader.h"
+/* This code calculates the sum of all elements in an array */
+#include <iostream>
+#include <cmath>
+#include "utils/cppheader.h"
 
-#define SIZE	10000000
-#define PI		3.14159265
-#define A		0.2761711861	
-#define B		0.5530207692
-#define C		0.3075097067
-#define K		20
+const int SIZE = 100000000;
+const double PI = 3.14159265;
+const double A = 0.2761711861;
+const double B = 0.5530207692;
+const double C = 0.3075097067;
+const int K = 20;
 
-struct coefficient {
-	double real, img;
+using namespace std;
+
+class Coefficient {
+public:
+	float real, img;
 };
 
-int main(int argc, char* argv[]) {
-	double *function, *sine, *cosine, ms;
-	struct coefficient coef[K];
-	int i, j, k;
+class FillingArrays {
+private:
+	int *myFunction, *myCosine, *mySine, mySize;
 	
-	function = (double*) malloc(sizeof(double) * SIZE);
-	sine = (double*) malloc(sizeof(double) * SIZE);
-	cosine = (double*) malloc(sizeof(double) * SIZE);
+public:
+	FillingArrays(int *function, int *cosine, int *sine, int size) : 
+		myFunction(function), myCosine(cosine), mySine(sine), mySize(size) {}
 	
-	printf("Starting...\n");
-	ms = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
-		
-		for (j = 0; j < SIZE; j++) {
+	void calculate() {
+		for (int j = 0; j < SIZE; j++) {
 			function[j] = (((A * (double) j) + (B * (double) j)) - C);
 			cosine[j] = cos((2 * j * K * PI) / N);
         	sine[j] = sin((2 * j * K * PI) / N);
 		}
+	}
+};
+
+class RealPart {
+private:
+	int *myFunction, *myCosine, mySize;
+	double result;
+	
+public:
+	RealPart(int *function, int *cosine, int size) : 
+		myFunction(function), myCosine(cosine), mySize(size), result(0) {}
 		
-		for (j = 0; j < K; j++) {
-			for (k = 0; k < SIZE; k++) {
-				coef[j].real = function[k] * cosine[k];
-				coef[j].img = function[k] * sine[k];
-			}
+	double getResult() const {
+		return result;
+	}
+	
+	void calculate() {
+		result = 0;
+		for (int j = 0; j < SIZE; j++) {
+			result += function[j] * cosine[j];
 		}
-		ms += stop_timer();
 	}
-	for (j = 0; j < K; j++) {
-		printf("%lf - %lfi\n", coef[j].real, coef[j].img);
+};
+
+class ImgPart {
+private:
+	int *myFunction, *mySine, mySize;
+	double result;
+	
+public:
+	ImgPart(int *function, int *sine, int size) : 
+		myFunction(function), mySine(sine), mySize(size), result(0) {}
+		
+	double getResult() const {
+		return result;
 	}
-	printf("avg time = %.5lf ms\n", (ms / N));
 	
-	free(function);
-	free(sine);
-	free(cosine);
+	void calculate() {
+		result = 0;
+		for (int j = 0; j < SIZE; j++) {
+			result += function[j] * sine[j];
+		}
+	}
+};
+
+int main(int argc, char* argv[]) {
+	double ms;
+	Timer t;
+	double *function, *sine, *cosine, ms;
+	Coefficient coef[K];
 	
+	function = new double[SIZE];
+	sine = new double[SIZE];
+	cosine = new double [SIZE];
+	
+	ms = 0;
+	FillingArrays fa(function, cosine, sine, SIZE);
+	RealPart rp(function, cosine, SIZE);
+	ImgPart im(function, sine, SIZE);
+	cout << "Starting..." << endl;
+	for (int i = 0; i < N; i++) {
+		t.start();
+		
+		fa.calculate();
+		for (int j = 0; j < K; j++) {
+			
+		}
+		
+		ms += t.stop();
+	}
+	cout << "avg = " << obj.getResult() << endl;
+	cout << "avg time = " << (ms / N) << " ms" << endl;
+	
+	delete [] a;
 	return 0;
 }
+

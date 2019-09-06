@@ -1,32 +1,51 @@
-/* This code calculates an IP approximation */
-#include <stdio.h>
-#include <stdlib.h>
-#include "utils/cheader.h"
+/* This code calculates an approximation of PI */
 
-#define NUM_RECTS 1e9
+#include <iostream>
+#include "utils/cppheader.h"
 
-int main(int argc, char* argv[]) {
-	double mid, height, width, area, ms;
-	double sum;
-	int i, j;
-	
-	printf("Starting...\n");
-	ms = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
-		
-		sum = 0;
+using namespace std;
+
+const long NUM_RECTS = 100000000;
+
+class CalculatingPi {
+private:
+	double area;
+
+public:
+	CalculatingPi() : area(0) {}
+
+	double getPi() const {
+		return area;
+	}
+
+	void calculate() {
+		double mid, height, width;
+		double sum = 0;
+
 		width = 1.0 / (double) NUM_RECTS;
-		for (j = 0; j < NUM_RECTS; j++) {
-			mid = (j + 0.5) * width;
+		for (int i = 0; i < NUM_RECTS; i++) {
+			mid = (i + 0.5) * width;
 			height = 4.0 / (1.0 + (mid * mid));
 			sum += height;
 		}
 		area = width * sum;
-		
-		ms += stop_timer();
 	}
-	printf("PI = %.15lf\n", area);
-	printf("avg time = %.5lf ms\n", (ms / N));
+};
+
+int main(int argc, char* argv[]) {
+	CalculatingPi cp;
+	Timer t;
+	double ms;
+
+	cout << "Starting..." << endl;
+	ms = 0;
+	for (int i = 0; i < N; i++) {
+		t.start();
+		cp.calculate();
+		ms += t.stop();
+	}
+	cout << "PI = " << cp.getPi() << endl;
+	cout << "avg time = " << (ms / N) << " ms" << endl;
+
 	return 0;
 }

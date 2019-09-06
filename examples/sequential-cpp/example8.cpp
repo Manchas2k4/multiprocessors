@@ -1,54 +1,66 @@
 /* This code will generate a fractal image. Uses OpenCV, to compile:
-   gcc example5.c `pkg-config --cflags --libs opencv`  */
-#include <stdio.h>
-#include <stdlib.h>
+   g++ example8.cpp `pkg-config --cflags --libs opencv`  */
+   
+#include <iostream>
 #include <opencv/highgui.h>
-#include "utils/cheader.h"
+#include "utils/cppheader.h"
 
-#define BLUR_WINDOW 15
+using namespace std;
 
-typedef enum color {BLUE, GREEN, RED} Color;
+const int BLUR_WINDOW = 15;
 
-void blur_pixel(IplImage *src, IplImage *dest, int ren, int col) {
-	int side_pixels, i, j, cells;
-	int tmp_ren, tmp_col, step;
-	float r, g, b;
+enum color {BLUE, GREEN, RED};
+
+class BlurProcess {
+private:
+	IplImage *src, *dest;
 	
-	side_pixels = (BLUR_WINDOW - 1) / 2;
-	cells = (BLUR_WINDOW * BLUR_WINDOW);
-	step = src->widthStep / sizeof(uchar);
-	r = 0; g = 0; b = 0;
-	for (i = -side_pixels; i <= side_pixels; i++) {
-		for (j = -side_pixels; j <= side_pixels; j++) {
-			tmp_ren = MIN( MAX(ren + i, 0), src->height - 1 );
-			tmp_col = MIN( MAX(col + j, 0), src->width - 1);
+	void blur_pixel(int ren, int col) {
+		int side_pixels, i, j, cells;
+		int tmp_ren, tmp_col, step;
+		float r, g, b;
+	
+		side_pixels = (BLUR_WINDOW - 1) / 2;
+		cells = (BLUR_WINDOW * BLUR_WINDOW);
+		step = src->widthStep / sizeof(uchar);
+		r = 0; g = 0; b = 0;
+		for (i = -side_pixels; i <= side_pixels; i++) {
+			for (j = -side_pixels; j <= side_pixels; j++) {
+				tmp_ren = MIN( MAX(ren + i, 0), src->height - 1 );
+				tmp_col = MIN( MAX(col + j, 0), src->width - 1);
 			
-			r += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + RED];
-			g += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + GREEN];
-			b += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + BLUE];
+				r += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + RED];
+				g += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + GREEN];
+				b += (float) src->imageData[(tmp_ren * step) + (tmp_col * src->nChannels) + BLUE];
+			}
 		}
+	
+		dest->imageData[(ren * step) + (col * dest->nChannels) + RED] =  (unsigned char) (r / cells);
+		dest->imageData[(ren * step) + (col * dest->nChannels) + GREEN] = (unsigned char) (g / cells);
+		dest->imageData[(ren * step) + (col * dest->nChannels) + BLUE] = (unsigned char) (b / cells);
 	}
 	
-	dest->imageData[(ren * step) + (col * dest->nChannels) + RED] =  (unsigned char) (r / cells);
-	dest->imageData[(ren * step) + (col * dest->nChannels) + GREEN] = (unsigned char) (g / cells);
-	dest->imageData[(ren * step) + (col * dest->nChannels) + BLUE] = (unsigned char) (b / cells);
-}
+public:
+
+	BlurProcess(IplImage *source, IplImage *destination)
+		:src(source), dest(destination) {}
 	
-void blur(IplImage *src, IplImage *dest) {
-	int index, size, step;
-    int ren, col;
-    
-    size = src->width * src->height;
-    step = src->widthStep / sizeof(uchar);
-    for (index = 0; index < size; index++) {
-    	ren = index / src->width;
-    	col = index % src->width;
-    	blur_pixel(src, dest, ren, col);
-    }
-}
+	void doMagic() {
+		int index, size, step;
+		int ren, col;
+		
+		size = src->width * src->height;
+		step = src->widthStep / sizeof(uchar);
+		for (index = 0; index < size; index++) {
+			ren = index / src->width;
+			col = index % src->width;
+			blur_pixel(ren, col);
+		}
+	}
+};
 
 int main(int argc, char* argv[]) {
-	int i;
+	Timer t;
 	double acum; 	
 	
 	if (argc != 2) {
@@ -63,20 +75,20 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 	
+	BlurProcess bp(src, dest);
 	acum = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
-		blur(src, dest);
-		acum += stop_timer();
+	for (int i = 0; i < N; i++) {
+		t.start();
+		bp.doMagic();
+		acum += t.stop();
 	}
-	
-	printf("avg time = %.5lf ms\n", (acum / N));
+	cout << "avg time = " << (acum /N) << endl;
 	
 	cvShowImage("Lenna (Original)", src);
 	cvShowImage("Lenna (Blur)", dest);
 	cvWaitKey(0);
 	cvDestroyWindow("Lenna (Original)");
 	cvDestroyWindow("Lenna (Blur)");
-
+	
 	return 0;
 }

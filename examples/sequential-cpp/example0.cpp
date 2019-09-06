@@ -1,41 +1,53 @@
-/* This code calculates the standard deviation of a set of values */
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "utils/cheader.h"
+/* This code calculates the sum of all elements in an array */
+#include <iostream>
+#include <cmath>
+#include "utils/cppheader.h"
 
-#define SIZE 1000000000
+const int SIZE = 1000000000;
 
-double sum_array(int *array, int size) {
-	double acum = 0;
-	int i;
+using namespace std;
+
+class SumArray {
+private:
+	int *myArray, mySize;
+	double result;
 	
-	for (i = 0; i < size; i++) {
-		acum += array[i];
+public:
+	SumArray(int *array, int size) : myArray(array), mySize(size), result(0) {}
+	
+	double getResult() const {
+		return result;
 	}
-	return acum;
-}
+	
+	void calculate() {
+		result = 0;
+		for (int i = 0; i < mySize; i++) {
+			result += myArray[i];
+		}
+	}
+};
 
 int main(int argc, char* argv[]) {
-	int i, j, *a;
-	double ms, result;
+	double ms;
+	Timer t;
+	int *a;
 	
-	a = (int *) malloc(sizeof(int) * SIZE);
+	a = new int[SIZE];
 	fill_array(a, SIZE);
 	display_array("a", a);
 	
-	printf("Starting...\n");
-	ms = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
-		
-		result = sum_array(a, SIZE);
-		
-		ms += stop_timer();
-	}
-	printf("sum = %lf\n", result);
-	printf("avg time = %.5lf ms\n", (ms / N));
 	
-	free(a);
+	ms = 0;
+	SumArray obj(a, SIZE);
+	cout << "Starting..." << endl;
+	for (int i = 0; i < N; i++) {
+		t.start();
+		obj.calculate();
+		ms += t.stop();
+	}
+	cout << "sum = " << obj.getResult() << endl;
+	cout << "avg time = " << (ms / N) << " ms" << endl;
+	
+	delete [] a;
 	return 0;
 }

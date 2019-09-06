@@ -1,31 +1,49 @@
 /* This code calculates an arctan approximation for |x| < 1 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "utils/cheader.h"
+#include <iostream>
+#include <cmath>
+#include "utils/cppheader.h"
 
-#define LIMIT 1e9
+const int LIMIT = 1000000000;
 
-int main(int argc, char* argv[]) {
-	double sum, ms, one, x = 0.99;
-	int i, j, n;
-	double tmp1, tmp2, tmp3;
+using namespace std;
+
+class Atan {
+private:
+	double myX, result;
 	
-	printf("Starting...\n");
-	ms = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
+public:
+	Atan(double x) : myX(x), result(0) {}
+	
+	double getResult() const {
+		return result;
+	}
+	
+	void calculate() {
+		double one, n;
 		
-		sum = 0;
-		for (j = 0; j < LIMIT; j++) {
+		result = 0;
+		for (int j = 0; j < LIMIT; j++) {
 			one = (j % 2 == 0)? 1.0 : -1.0;
 			n = (2 * j ) + 1;
-			sum = sum + ( (one / n) * pow(x, n) );
+			result += ( (one / n) * pow(myX, n) );
 		}
-		
-		ms += stop_timer();
 	}
-	printf("arctan(0.99)->(0.78) = %.15lf\n", sum);
-	printf("avg time = %.5lf ms\n", (ms / N));
+};
+
+int main(int argc, char* argv[]) {
+	double ms;
+	Timer t;
+	
+	ms = 0;
+	Atan obj(0.99);
+	cout << "Starting..." << endl;
+	for (int i = 0; i < N; i++) {
+		t.start();
+		obj.calculate();
+		ms += t.stop();
+	}
+	cout << "arctan(0.99)->(0.78) = " << obj.getResult() << endl;
+	cout << "avg time = " << (ms / N) << " ms" << endl;
+	
 	return 0;
 }

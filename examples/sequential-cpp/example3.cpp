@@ -1,46 +1,64 @@
-/* This code calculates the standard deviation of a set of values */
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "utils/cheader.h"
+/* This code calculates the sum of all elements in an array */
+#include <iostream>
+#include <cmath>
+#include "utils/cppheader.h"
 
-#define SIZE 1000000000
+const int SIZE = 1000000000;
 
-double deviation(int *array, int size) {
-	int i;
-	double acum, avg;
+using namespace std;
+
+class Deviation {
+private:
+	int *myArray, mySize;
+	double result;
 	
-	acum = 0;
-	for (i = 0; i < size; i++) {
-		acum += array[i];
-	}
-	avg = acum / size;
+public:
+	Deviation(int *array, int size) 
+		: myArray(array), mySize(size), result(0) {}
 	
-	acum = 0;
-	for (i = 0; i < size; i++) {
-		acum = (array[i] - avg) * (array[i] - avg);
+	double getResult() const {
+		return result;
 	}
-	return (sqrt(acum / size));
-}
+	
+	void calculate() {
+		int i;
+		double acum, avg;
+		
+		acum = 0;
+		for (i = 0; i < mySize; i++) {
+			acum += myArray[i];
+		}
+		avg = acum / mySize;
+		
+		acum = 0;
+		for (i = 0; i < mySize; i++) {
+			acum = (myArray[i] - avg) * (myArray[i] - avg);
+		}
+		result = sqrt(acum / mySize);
+	}
+};
 
 int main(int argc, char* argv[]) {
-	int i, j, *array;
-	double ms, result;
+	double ms;
+	Timer t;
+	int *a;
 	
-	array = (int *) malloc(sizeof(int) * SIZE);
-	random_array(array, SIZE);
-	display_array("array", array);
+	a = new int[SIZE];
+	random_array(a, SIZE);
+	display_array("a", a);
 	
-	printf("Starting...\n");
+	
 	ms = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
-		
-		result = deviation(array, SIZE);
-		
-		ms += stop_timer();
+	Deviation obj(a, SIZE);
+	cout << "Starting..." << endl;
+	for (int i = 0; i < N; i++) {
+		t.start();
+		obj.calculate();
+		ms += t.stop();
 	}
-	printf("S = %.15lf\n", result);
-	printf("avg time = %.5lf ms\n", (ms / N));
+	cout << "S = " << obj.getResult() << endl;
+	cout << "avg time = " << (ms / N) << " ms" << endl;
+	
+	delete [] a;
 	return 0;
 }

@@ -1,52 +1,63 @@
-/* Implementation of the counting sort algorithm */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "utils/cheader.h"
+/* This code implements the known sort algorithm "Counting sort" */
 
-#define SIZE 100000
+#include <iostream>
+#include <cstring>
+#include "utils/cppheader.h"
 
-void counting_sort(int *array, int size, int copy) {
-	int *temp = (int*) malloc(sizeof(int) * size);
-	int i, j, count;
-	
-	for (i = 0; i < size; i++) {
-		count = 0;
-		for (j = 0; j < size; j++) {
-			if (array[j] < array[i]) {
-				count++;
-			} else if (array[i] == array[j] && j < i) {
-				count++;
+using namespace std;
+
+#define SIZE 10000
+
+class EnumerationSort {
+private:
+	int *array;
+	int size;
+
+public:
+	EnumerationSort(int *a, int s) : array(a), size(s) {}
+
+	void doSort(int copy) {
+		int *temp = new int[size];
+		int i, j, count;
+
+		for (i = 0; i < size; i++) {
+			count = 0;
+			for (j = 0; j < size; j++) {
+				if (array[j] < array[i]) {
+					count++;
+				} else if (array[i] == array[j] && j < i) {
+					count++;
+				}
 			}
+			temp[count] = array[i];
 		}
-		temp[count] = array[i];
+		if (copy) {
+			memcpy(array, temp, sizeof(int) * size);
+		}
+		delete [] temp;
 	}
-	
-	if (copy) {
-		memcpy(array, temp, sizeof(int) * size);
-	}
-	free(temp);	
-}
+};
 
 int main(int argc, char* argv[]) {
-	int i, *array;
+	Timer t;
 	double ms;
 	
-	array = (int*) malloc(sizeof(int) * SIZE);
+	int *array = new int[SIZE];
 	random_array(array, SIZE);
 	display_array("before", array);
-	
-	printf("Starting...\n");
-	for (i = 0; i < N; i++) {
-		start_timer();
-		
-		counting_sort(array, SIZE, (i == (N - 1)));
-		
-		ms += stop_timer();
+
+	EnumerationSort es(array, SIZE);
+	ms = 0;
+	for (int i = 0; i < N; i++) {
+		t.start();
+		es.doSort((i % N == 0));
+		ms += t.stop();
 	}
-	
 	display_array("after", array);
-	printf("avg time = %.5lf ms\n", (ms / N));
-	free(array);
+	cout << "avg time = " << (ms /N) << endl;
+	
+	delete [] array;
+	
 	return 0;
 }
+

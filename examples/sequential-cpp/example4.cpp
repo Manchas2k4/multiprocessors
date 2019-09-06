@@ -1,46 +1,58 @@
-/* This code calculates the standard deviation of a set of values */
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "utils/cheader.h"
+/* This code adds two vectors */
 
-#define SIZE 100000000
+#include <iostream>
+#include "utils/cppheader.h"
 
-void add_vectors(int *c, int *a, int *b, int size) {
-	int i;
-	for (i = 0; i < size; i++) {
-		c[i] = a[i] + b[i];
+using namespace std;
+
+const int SIZE = 100000000;
+
+class AddVectors {
+private:
+	int *a, *b, *c;
+	int size;
+
+public:
+	AddVectors(int *arrayC, int *arrayA, int *arrayB, int s) 
+		: c(arrayC), a(arrayA), b(arrayB), size(s) {}
+
+	void calculate() {
+		for (int i = 0; i < size; i++) {
+			c[i] = a[i] + b[i];
+		}
 	}
-}
+};
 
 int main(int argc, char* argv[]) {
-	int i, j, *a, *b, *c;
-	double ms, result;
+	Timer t;
+	double ms;
 	
-	a = (int *) malloc(sizeof(int) * SIZE);
+	int *a = new int[SIZE];
 	fill_array(a, SIZE);
 	display_array("a", a);
 	
-	b = (int *) malloc(sizeof(int) * SIZE);
+	int *b = new int[SIZE];
 	fill_array(b, SIZE);
 	display_array("b", b);
 	
-	c = (int *) malloc(sizeof(int) * SIZE);
-	
-	printf("Starting...\n");
+	int *c = new int[SIZE];
+	fill_array(c, SIZE);
+
+	AddVectors av(c, a, b, SIZE);
+	cout << "Starting..." << endl;
 	ms = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
-		
-		add_vectors(c, a, b, SIZE);
-		
-		ms += stop_timer();
+	for (int i = 0; i < N; i++) {
+		t.start();
+		av.calculate();
+		ms += t.stop();
 	}
 	display_array("c", c);
-	printf("avg time = %.5lf ms\n", (ms / N));
+	cout << "avg time = " << (ms/N) << " ms" << endl;
 	
-	free(a);
-	free(b);
-	free(c);
+	delete [] a;
+	delete [] b;
+	delete [] c;
+	
 	return 0;
 }
+
