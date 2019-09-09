@@ -1,49 +1,49 @@
 /* This code adds all the values of an array */
 
-public class Example0 extends Thread {
-	private int array[], start, end;
-	private long result;
+public class Example2 extends Thread {
+	private double result, x;
+	private int start, end;
 	
-	public Example0(int array[], int start, int end) {
-		this.array = array;
+	public Example2(double x, int start, int end) {
+		this.x = x;
 		this.start = start;
 		this.end = end;
 		this.result = 0;
 	}
 	
-	public long getResult() {
+	public double getResult() {
 		return result;
 	}
 	
 	public void run() {
+		double one, n;
+		
 		result = 0;
-		for (int i = start; i < end; i++) {
-			result += array[i];
+		for (int j = start; j < end; j++) {
+			one = (j % 2 == 0)? 1.0 : -1.0;
+			n = (2 * j ) + 1;
+			result += ( (one / n) * Math.pow(x, n) );
 		}
 	}
 	
 	public static void main(String args[]) {
-	//1000000000
-		final int SIZE = 300_000_000;
-		Example0 threads[];
+	 	final int NUM_RECTS = 1_000_000_000;
+		Example2 threads[];
 		int block;
-		long startTime, stopTime, total = 0;
-		double acum = 0;
+		long startTime, stopTime;
+		double width, result = 0, acum = 0;
 		
-		int array[] = new int[SIZE];
-		Utils.fillArray(array);
-		Utils.displayArray("array", array);
-		
-		block = SIZE / Utils.MAXTHREADS;
-		threads = new Example0[Utils.MAXTHREADS];
+		block = NUM_RECTS / Utils.MAXTHREADS;
+		threads = new Example2[Utils.MAXTHREADS];
 		
 		acum = 0;
 		for (int j = 1; j <= Utils.N; j++) {
+			width = 1.0 / (double) NUM_RECTS;
 			for (int i = 0; i < threads.length; i++) {
 				if (i != threads.length - 1) {
-					threads[i] = new Example0(array, (i * block), ((i + 1) * block));
+					threads[i] = new Example2(width, (i * block), ((i + 1) * block));
 				} else {
-					threads[i] = new Example0(array, (i * block), SIZE);
+					threads[i] = new Example2(width, (i * block), NUM_RECTS);
 				}
 			}
 			
@@ -62,15 +62,13 @@ public class Example0 extends Thread {
 			acum +=  (stopTime - startTime);
 			
 			if (j == Utils.N) {
-				total = 0;
-				System.out.printf("sum1 = %d\n", total);
+				result = 0;
 				for (int i = 0; i < threads.length; i++) {
-					total += threads[i].getResult();
+					result += threads[i].getResult();
 				}
-				System.out.printf("sum2 = %d\n", total);
 			}
 		}
-		System.out.printf("sum = %d\n", total);
+		System.out.printf("arctan(0.99)->(0.78) = %f\n", result);
 		System.out.printf("avg time = %.5f\n", (acum / Utils.N));
 	}
 }
