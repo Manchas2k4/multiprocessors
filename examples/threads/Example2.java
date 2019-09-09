@@ -27,23 +27,22 @@ public class Example2 extends Thread {
 	}
 	
 	public static void main(String args[]) {
-	 	final int NUM_RECTS = 1_000_000_000;
+	 	final int LIMIT = 100_000_000;
 		Example2 threads[];
 		int block;
 		long startTime, stopTime;
 		double width, result = 0, acum = 0;
 		
-		block = NUM_RECTS / Utils.MAXTHREADS;
+		block = LIMIT / Utils.MAXTHREADS;
 		threads = new Example2[Utils.MAXTHREADS];
 		
 		acum = 0;
 		for (int j = 1; j <= Utils.N; j++) {
-			width = 1.0 / (double) NUM_RECTS;
 			for (int i = 0; i < threads.length; i++) {
 				if (i != threads.length - 1) {
-					threads[i] = new Example2(width, (i * block), ((i + 1) * block));
+					threads[i] = new Example2(0.99, (i * block), ((i + 1) * block));
 				} else {
-					threads[i] = new Example2(width, (i * block), NUM_RECTS);
+					threads[i] = new Example2(0.99, (i * block), LIMIT);
 				}
 			}
 			

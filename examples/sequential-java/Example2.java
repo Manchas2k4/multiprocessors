@@ -1,7 +1,7 @@
 /* This code calculates de atan of x, x < 1 */
 
 public class Example2 {
-	private static final int LIMIT = 1_000_000_000;
+	private static final int LIMIT = 100_000_000;
 	private double result, x;
 	
 	public Example2(double x) {
