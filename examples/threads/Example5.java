@@ -2,7 +2,7 @@
 import java.util.Arrays;
 
 public class Example5 extends Thread {
-	private int array[], temp[], start, end;;
+	private int array[], temp[], start, end;
 	
 	public Example5(int array[], int start, int end) {
 		super();
