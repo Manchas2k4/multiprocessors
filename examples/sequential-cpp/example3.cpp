@@ -32,7 +32,7 @@ public:
 		
 		acum = 0;
 		for (i = 0; i < mySize; i++) {
-			acum = (myArray[i] - avg) * (myArray[i] - avg);
+			acum += (myArray[i] - avg) * (myArray[i] - avg);
 		}
 		result = sqrt(acum / mySize);
 	}

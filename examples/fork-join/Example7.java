@@ -1,14 +1,19 @@
 /* This code will generate a fractal image. */
 import java.awt.image.BufferedImage;
-//import java.io.File;
-//import javax.imageio.ImageIO;
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.ForkJoinPool;
 
-public class Example7 {
+public class Example7 extends RecursiveAction {
+	private static final int WIDTH = 1024; // 4096;
+	private static final int HEIGHT = 768; //3112;
 	private static final float SCALEX = 1.5f;
 	private static final float SCALEY = 1.5f;
-	private int array[], width, height;
+	private static final int MIN = 10_000;
+	private int array[], width, height, start, end;
 	
-	public Example7(int array[], int width, int height) {
+	public Example7(int start, int end, int array[], int width, int height) {
+		this.start = start;
+		this.end = end;
 		this.array = array;
 		this.width = width;
 		this.height = height;
@@ -29,11 +34,11 @@ public class Example7 {
 		}
 		return 1;
 	}
-	
-	void doMagic() {
+
+	protected void computeDirectly() {
 		int index, ren, col, value, pixel, r, g, b;
 		
-		for (index = 0; index < array.length; index++) {
+		for (index = start; index < end; index++) {
 			ren = index / width;
 			col = index % width;
 			pixel = array[index];
@@ -50,19 +55,31 @@ public class Example7 {
 							| (((int) b) << 0);
 		}
 	}
+
+	@Override 
+	protected void compute() {
+		if ( (end - start) <= MIN ) {
+			computeDirectly();
+		} else {
+			int mid = start + ((end - start) / 2);
+			invokeAll(new Example7(start, mid, array, width, height),
+					  new Example7(mid, end, array, width, height));
+		}
+	}
 	
 	public static void main(String args[]) {
-		final int WIDTH = 1024;
-		final int HEIGHT = 768;
 		long startTime, stopTime;
 		double acum = 0;
+		ForkJoinPool pool;
 		
 		int array[] = new int[WIDTH * HEIGHT];
-		Example7 e = new Example7(array, WIDTH, HEIGHT);
 		acum = 0;
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
-			e.doMagic();
+
+			pool = new ForkJoinPool(Utils.MAXTHREADS);
+			pool.invoke(new Example7(0, WIDTH * HEIGHT, array, WIDTH, HEIGHT));
+
 			stopTime = System.currentTimeMillis();
 			acum += (stopTime - startTime);
 		}

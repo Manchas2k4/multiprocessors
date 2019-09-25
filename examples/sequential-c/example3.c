@@ -18,7 +18,7 @@ double deviation(int *array, int size) {
 	
 	acum = 0;
 	for (i = 0; i < size; i++) {
-		acum = (array[i] - avg) * (array[i] - avg);
+		acum += (array[i] - avg) * (array[i] - avg);
 	}
 	return (sqrt(acum / size));
 }

@@ -25,7 +25,7 @@ public class Example3 {
 		
 		acum = 0;
 		for (i = 0; i < array.length; i++) {
-			acum = (array[i] - avg) * (array[i] - avg);
+			acum += (array[i] - avg) * (array[i] - avg);
 		}
 		
 		result = Math.sqrt(acum / array.length);

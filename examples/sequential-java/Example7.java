@@ -1,9 +1,9 @@
 /* This code will generate a fractal image. */
 import java.awt.image.BufferedImage;
-//import java.io.File;
-//import javax.imageio.ImageIO;
 
 public class Example7 {
+	private static final int WIDTH = 1024;
+	private static final int HEIGHT = 768;
 	private static final float SCALEX = 1.5f;
 	private static final float SCALEY = 1.5f;
 	private int array[], width, height;
@@ -52,8 +52,6 @@ public class Example7 {
 	}
 	
 	public static void main(String args[]) {
-		final int WIDTH = 1024;
-		final int HEIGHT = 768;
 		long startTime, stopTime;
 		double acum = 0;
 		
