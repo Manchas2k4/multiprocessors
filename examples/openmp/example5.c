@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "utils/cheader.h"
+#include <omp.h>
 
 #define SIZE 100000
 
@@ -10,6 +11,7 @@ void counting_sort(int *array, int size, int copy) {
 	int *temp = (int*) malloc(sizeof(int) * size);
 	int i, j, count;
 	
+	#pragma omp parallel for shared(array, temp, size) private(j, count)
 	for (i = 0; i < size; i++) {
 		count = 0;
 		for (j = 0; j < size; j++) {

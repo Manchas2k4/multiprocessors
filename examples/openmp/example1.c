@@ -4,7 +4,7 @@
 #include <omp.h>
 #include "utils/cheader.h"
 
-#define NUM_RECTS 1e8
+#define NUM_RECTS 1e9
 
 int main(int argc, char* argv[]) {
 	double mid, height, width, area, ms;

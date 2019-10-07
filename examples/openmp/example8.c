@@ -1,9 +1,10 @@
 /* This code will generate a fractal image. Uses OpenCV, to compile:
-   gcc example5.c `pkg-config --cflags --libs opencv`  */
+   gcc example5.c `pkg-config --cflags --libs opencv` -fopenmp */
 #include <stdio.h>
 #include <stdlib.h>
 #include <opencv/highgui.h>
 #include "utils/cheader.h"
+#include <omp.h>
 
 #define BLUR_WINDOW 15
 
@@ -35,11 +36,12 @@ void blur_pixel(IplImage *src, IplImage *dest, int ren, int col) {
 }
 	
 void blur(IplImage *src, IplImage *dest) {
-	int index, size, step;
+	int index, size;
     int ren, col;
     
     size = src->width * src->height;
-    step = src->widthStep / sizeof(uchar);
+    
+    #pragma omp parallel for shared(src, dest, size) private(ren, col)
     for (index = 0; index < size; index++) {
     	ren = index / src->width;
     	col = index % src->width;

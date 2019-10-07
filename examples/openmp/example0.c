@@ -1,8 +1,8 @@
-/* This code calculates the standard deviation of a set of values */
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+//#include <math.h>
 #include "utils/cheader.h"
+#include <omp.h>
 
 #define SIZE 1000000000
 
@@ -10,6 +10,7 @@ double sum_array(int *array, int size) {
 	double acum = 0;
 	int i;
 	
+	#pragma omp parallel for shared(array, size) reduction(+: acum)
 	for (i = 0; i < size; i++) {
 		acum += array[i];
 	}
