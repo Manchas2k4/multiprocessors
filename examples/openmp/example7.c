@@ -5,6 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "utils/cheader.h"
+#include <omp.h>
  
 #define WIDTH	1024
 #define HEIGHT	768
@@ -56,15 +57,19 @@ void build_julia_set(IplImage* img) {
     
     size = img->width * img->height;
     step = img->widthStep / sizeof(uchar);
+	#pragma omp parallel for shared(size, step, img) private(ren, col, value)
     for (index = 0; index < size; index++) {
     	ren = index / img->width;
     	col = index % img->width;
     	
     	value = julia_value(col, ren, img->width, img->height);
     	
-    	img->imageData[(ren * step) + (col * img->nChannels) + RED] = (unsigned char) (255 * (0.4 * value));
-    	img->imageData[(ren * step) + (col * img->nChannels) + GREEN] = (unsigned char) (255 * (0.5 * value));
-    	img->imageData[(ren * step) + (col * img->nChannels) + BLUE] = (unsigned char) (255 * (0.7 * value));
+    	img->imageData[(ren * step) + (col * img->nChannels) + RED] = 
+			(unsigned char) (255 * (0.4 * value));
+    	img->imageData[(ren * step) + (col * img->nChannels) + GREEN] = 
+			(unsigned char) (255 * (0.5 * value));
+    	img->imageData[(ren * step) + (col * img->nChannels) + BLUE] = 
+			(unsigned char) (255 * (0.7 * value));
     }
 }
 

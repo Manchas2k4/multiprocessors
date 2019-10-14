@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "utils/cheader.h"
+#include <omp.h>
 
 #define SIZE 1000000000
 
@@ -11,12 +12,14 @@ double deviation(int *array, int size) {
 	double acum, avg;
 	
 	acum = 0;
+	#pragma omp parallel for shared(array, size) reduction(+:acum)
 	for (i = 0; i < size; i++) {
 		acum += array[i];
 	}
 	avg = acum / size;
 	
 	acum = 0;
+	#pragma omp parallel for shared(array, size, avg) reduction(+:acum)
 	for (i = 0; i < size; i++) {
 		acum += (array[i] - avg) * (array[i] - avg);
 	}

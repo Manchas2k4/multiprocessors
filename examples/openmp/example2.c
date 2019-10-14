@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "utils/cheader.h"
+#include <omp.h>
 
 #define LIMIT 1e9
 
@@ -17,6 +18,7 @@ int main(int argc, char* argv[]) {
 		start_timer();
 		
 		sum = 0;
+		#pragma parallel for shared(x) private(one, n) reduction(+:sum)
 		for (j = 0; j < LIMIT; j++) {
 			one = (j % 2 == 0)? 1.0 : -1.0;
 			n = (2 * j ) + 1;

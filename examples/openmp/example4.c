@@ -8,6 +8,7 @@
 
 void add_vectors(int *c, int *a, int *b, int size) {
 	int i;
+	#pragma omp parallel for shared(c, a, b, size)
 	for (i = 0; i < size; i++) {
 		c[i] = a[i] + b[i];
 	}
