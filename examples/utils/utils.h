@@ -1,5 +1,19 @@
-#ifndef TIMER_H_
-#define TIMER_H_
+// =================================================================
+//
+// File: utils.h 
+// Author: Pedro Perez
+// Description: This file contains the interface and implementation
+//				of the Chronometer class. As well as the 
+//				implementation of functions for the initialization 
+//				and display of integer arrays.
+//
+// Copyright (c) 2020 by Tecnologico de Monterrey.  
+// All Rights Reserved. May be reproduced for any non-commercial 
+// purpose.
+//
+// =================================================================
+#ifndef UTILS_H
+#define UTILS_H
 
 #include <stdlib.h>
 #include <time.h>
@@ -59,4 +73,4 @@ void display_array(char *text, int *array) {
 	printf(", ... ,]\n");
 }
 
-#endif /* TIMER_H_ */
+#endif
