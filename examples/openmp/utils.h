@@ -1,17 +1,18 @@
 // =================================================================
 //
-// File: utils.h 
+// File: utils.h
 // Author: Pedro Perez
-// Description: This file contains the interface and implementation
-//				of the Chronometer class. As well as the 
-//				implementation of functions for the initialization 
-//				and display of integer arrays.
+// Description: This file contains the implementation of the
+//				functions used to take the time and perform the
+//				speed up calculation; as well as functions for
+//				initializing integer arrays.
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.  
-// All Rights Reserved. May be reproduced for any non-commercial 
+// Copyright (c) 2020 by Tecnologico de Monterrey.
+// All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
 // =================================================================
+
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -20,9 +21,14 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
+#define MIN_VAL(a,b) (((a)<(b))?(a):(b))
+#define MAX_VAL(a,b) (((a)>(b))?(a):(b))
+
 #define N 			10
 #define DISPLAY		100
-#define MAX_VALUE	10000
+#define TOP_VALUE	10000
+
+typedef enum color {BLUE, GREEN, RED} Color;
 
 struct timeval startTime, stopTime;
 int started = 0;
@@ -58,13 +64,14 @@ void random_array(int *array, int size) {
 void fill_array(int *array, int size) {
 	int i;
 
+	srand(time(0));
 	for (i = 0; i < size; i++) {
-		array[i] = (i % MAX_VALUE) + 1;
+		array[i] = (i % TOP_VALUE) + 1;
 	}
 }
 
 void display_array(char *text, int *array) {
-	int i;
+	int i, limit;
 
 	printf("%s = [%4i", text, array[0]);
 	for (i = 1; i < DISPLAY; i++) {
@@ -72,5 +79,4 @@ void display_array(char *text, int *array) {
 	}
 	printf(", ... ,]\n");
 }
-
 #endif
