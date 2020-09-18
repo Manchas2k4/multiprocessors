@@ -51,7 +51,7 @@ public:
 		x = start;
 		result = 0;
 		for (int i = 0; i < RECTS; i++) {
-			result += fn(x + (i * dx));
+			result += func(x + (i * dx));
 		}
 		result = result * dx;
 	}
