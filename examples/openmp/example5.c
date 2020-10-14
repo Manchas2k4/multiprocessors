@@ -17,7 +17,7 @@
 #include "utils.h"
 
 #define SIZE 100000000 //1e8
-#define GRAIN 1000 // 1e3
+#define GRAIN 1000 // 1e2
 
 void swap(int *a, int i, int j) {
 	int aux = a[i];
@@ -55,32 +55,32 @@ void merge(int *A, int *B, int low, int mid, int high) {
 }
 
 void split(int *A, int *B, int low, int high) {
-    int  mid, size, i, j;
+  int  mid, size, i, j;
 
 	size = high - low + 1;
 	if(size < GRAIN) {
-        for(i = low + 1; i < size; i++){
+    for(i = low + 1; i <= high; i++){
 			for(j = i; j > low && A[j] < A[j - 1]; j--){
 				swap(A, j, j - 1);
 			}
 		}
 		return;
-    }
-	
+  }
+
 	mid = low + ((high - low) / 2);
-	#pragma omp parallel 
+	#pragma omp parallel
 	{
-		#pragma omp task 
+		#pragma omp task
 		{
 			split(A, B, low, mid);
 		}
-		
-		#pragma omp task 
+
+		#pragma omp task
 		{
-			split(A, B, mid +1, high);
+			split(A, B, mid + 1, high);
 		}
-		
-		#pragma omp taskwait 
+
+		#pragma omp taskwait
 		{
 			merge(A, B,low, mid, high);
 			copy_array(A,B, low, high);
@@ -97,25 +97,25 @@ void merge_sort(int *A, int size) {
 int main(int argc, char* argv[]) {
 	int i, j, *a, *aux;
 	double ms;
-	
+
 	a = (int*) malloc(sizeof(int) * SIZE);
 	aux = (int*) malloc(sizeof(int) * SIZE);
 	random_array(a, SIZE);
 	display_array("before", a);
-	
+
 	printf("Starting...\n");
 	ms = 0;
 	for (i = 0; i < N; i++) {
 		start_timer();
-		
+
 		memcpy(aux, a, sizeof(int) * SIZE);
 		merge_sort(aux, SIZE);
-		
+
 		ms += stop_timer();
 	}
 	display_array("after", aux);
 	printf("avg time = %.5lf ms\n", (ms / N));
-	
+
 	free(a); free(aux);
 	return 0;
 }
