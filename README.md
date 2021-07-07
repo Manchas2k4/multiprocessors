@@ -1,2 +1,3 @@
-# Advanced Programming (TC2025)
-Our main intention is that you acquire the ability to design and program the solutions to these problems, in a platform-dependent low-level (C) language, using the UNIX operating system API correctly.
+![Tec de Monterrey](images/logotecmty.png)
+# Multiprocessors (TE3061)
+This is an advanced theoretical course in computer equipment programming which provides students with knowledge about the functioning of computer systems based on multi-core microprocessors and architectures of multiple interconnected microprocessors. It requires previous knowledge in operating systems and computer equipment interfaces. Learning outcome: students will design and program algorithms using the paradigm of task fragmentation in order to solve problems using multi-core computer systems and/or systems with multiple processors.
