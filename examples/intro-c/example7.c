@@ -1,9 +1,9 @@
 // =================================================================
 //
-// File: example2.c
+// File: example7.c
 // Author: Pedro Perez
-// Description: This file contains the code that searches for the
-// 				smallest value stored in an array. The time this
+// Description: This file contains the code to brute-force all
+//				prime numbers less than MAXIMUM. The time this
 //				implementation takes will be used as the basis to
 //				calculate the improvement obtained with parallel
 //				technologies.
@@ -16,44 +16,42 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
+#include <math.h>
 #include "utils.h"
 
-#define SIZE 1000000000 //1e9
+#define MAXIMUM 1000000 //1e6
 
-int min_value(int *array, int size) {
-	int i, result;
-
-	result = INT_MAX;
-	for (i = 0; i < size; i++) {
-		result = MIN(result, array[i]);
-	}
-	return result;
-}
+// implement your code
 
 int main(int argc, char* argv[]) {
-	int i, *a, pos, result;
+	int i, *a;
 	double ms;
 
-	a = (int *) malloc(sizeof(int) * SIZE);
-	random_array(a, SIZE);
-	display_array("a", a);
-
-	srand(time(0));
-	pos = rand() % SIZE;
-	printf("Setting value 0 at %i\n", pos);
-	a[pos] = 0;
+	a = (int *) malloc(sizeof(int) * (MAXIMUM + 1));
+	printf("At first, neither is a prime. We will display to TOP_VALUE:\n");
+	for (i = 2; i < TOP_VALUE; i++) {
+		if (a[i] == 0) {
+			printf("%i ", i);
+		}
+	}
+	printf("\n");
 
 	printf("Starting...\n");
 	ms = 0;
 	for (i = 0; i < N; i++) {
 		start_timer();
 
-		result = min_value(a, SIZE);
+		// call the implemented function
 
 		ms += stop_timer();
 	}
-	printf("result = %i\n", result);
+	printf("Expanding the numbers that are prime to TOP_VALUE:\n");
+	for (i = 2; i < TOP_VALUE; i++) {
+		if (a[i] == 1) {
+			printf("%i ", i);
+		}
+	}
+	printf("\n");
 	printf("avg time = %.5lf ms\n", (ms / N));
 
 	free(a);
