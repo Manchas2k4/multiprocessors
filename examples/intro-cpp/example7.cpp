@@ -99,24 +99,24 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-    double ms;
-    Mat img = Mat(HEIGHT, WIDTH, CV_8UC3);
+	double ms;
+	Mat img = Mat(HEIGHT, WIDTH, CV_8UC3);
 
 	ms = 0;
 	JuliaSet obj(img);
-    for (int i = 0; i < N; i++) {
-        start_timer();
+	for (int i = 0; i < N; i++) {
+		start_timer();
 
 		obj.doTask();
 
 		ms += stop_timer();
-    }
+	}
 
-    cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
+	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
 	namedWindow("CPU Julia | c(-0.8, 0.156)", WINDOW_AUTOSIZE);
-    imshow("CPU Julia | c(-0.8, 0.156)", img);
+	imshow("CPU Julia | c(-0.8, 0.156)", img);
 
 	waitKey(0);
 
-    return 0;
+	return 0;
 }

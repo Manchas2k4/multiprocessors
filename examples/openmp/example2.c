@@ -2,7 +2,7 @@
 //
 // File: example2.c
 // Author: Pedro Perez
-// Description: This file contains the code to perform the numerical 
+// Description: This file contains the code to perform the numerical
 //				integration of a function within a defined interval
 //				using OpenMP.
 //
@@ -29,8 +29,8 @@ double integration(double a, double b, double (*fn) (double)) {
 	int i;
 	double high, dx, acum, x;
 
-	x = MIN_VAL(a, b);
-	dx = (MAX_VAL(a, b) - MIN_VAL(a, b)) / RECTS;
+	x = MIN(a, b);
+	dx = (MAX(a, b) - MIN(a, b)) / RECTS;
 	acum = 0;
 	#pragma omp parallel for shared(x, dx) reduction(+:acum)
 	for (i = 0; i < RECTS; i++) {
@@ -42,18 +42,18 @@ double integration(double a, double b, double (*fn) (double)) {
 int main(int argc, char* argv[]) {
 	int i, j;
 	double ms, result;
-	
+
 	printf("Starting...\n");
 	ms = 0;
 	for (i = 0; i < N; i++) {
 		start_timer();
-		
+
 		result = integration(0, PI, function);
-		
+
 		ms += stop_timer();
 	}
 	printf("sum = %lf\n", result);
 	printf("avg time = %.5lf ms\n", (ms / N));
-	
+
 	return 0;
 }

@@ -9,6 +9,8 @@
 *.out
 runTest*
 app
+*.exp
+*.lib
 
 # Packages #
 ############

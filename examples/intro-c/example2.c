@@ -2,10 +2,10 @@
 //
 // File: example2.c
 // Author: Pedro Perez
-// Description: This file contains the code to perform the numerical 
-//				integration of a function within a defined interval. 
-//				The time this implementation takes will be used as 
-//				the basis to calculate the improvement obtained with 
+// Description: This file contains the code to perform the numerical
+//				integration of a function within a defined interval.
+//				The time this implementation takes will be used as
+//				the basis to calculate the improvement obtained with
 //				parallel technologies.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
@@ -30,8 +30,8 @@ double integration(double a, double b, double (*fn) (double)) {
 	double high, dx, acum, x;
 	int i;
 
-	x = MIN_VAL(a, b);
-	dx = (MAX_VAL(a, b) - MIN_VAL(a, b)) / RECTS;
+	x = MIN(a, b);
+	dx = (MAX(a, b) - MIN(a, b)) / RECTS;
 	acum = 0;
 	for (i = 0; i < RECTS; i++) {
 		acum += fn(x + (i * dx));
@@ -42,18 +42,18 @@ double integration(double a, double b, double (*fn) (double)) {
 int main(int argc, char* argv[]) {
 	int i, j;
 	double ms, result;
-	
+
 	printf("Starting...\n");
 	ms = 0;
 	for (i = 0; i < N; i++) {
 		start_timer();
-		
+
 		result = integration(0, PI, function);
-		
+
 		ms += stop_timer();
 	}
 	printf("sum = %lf\n", result);
 	printf("avg time = %.5lf ms\n", (ms / N));
-	
+
 	return 0;
 }
