@@ -1,8 +1,8 @@
 // =================================================================
 //
-// File: Example7.java
+// File: Example9.java
 // Author: Pedro Perez
-// Description: This file implements the code  will generate a 
+// Description: This file implements the code  will generate a
 //				fractal image using Java's Fork-Join.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ForkJoinPool;
 
-public class Example7 extends RecursiveAction {
+public class Example9 extends RecursiveAction {
 	private static final int MIN = 100_000;
 	private static final int WIDTH = 1920;
 	private static final int HEIGHT = 1080;
@@ -26,20 +26,20 @@ public class Example7 extends RecursiveAction {
 	private static final float GREEN_PCT = 0.4f;
 	private static final float BLUE_PCT = 0.7f;
 	private int array[], start, end;
-	
-	public Example7(int array[], int start, int end) {
+
+	public Example9(int array[], int start, int end) {
 		this.array = array;
 		this.start = start;
 		this.end = end;
 	}
-	
+
 	private int juliaValue(int x, int y) {
 		int k;
 		float jx = SCALEX * (float) (WIDTH / 2 - x) / (WIDTH / 2);
 		float jy = SCALEY * (float) (HEIGHT / 2 - y) / (HEIGHT / 2);
 		Complex c = new Complex(-0.8f, 0.156f);
 		Complex a = new Complex(jx, jy);
-	 
+
 		for (k = 0; k < 200; k++) {
 		    a = (a.mult(a)).add(c);
 		    if (a.magnitude2() > 1000) {
@@ -48,61 +48,61 @@ public class Example7 extends RecursiveAction {
 		}
 		return 1;
 	}
-	
+
 	public void computeDirectly() {
 		int index, ren, col, value, pixel, r, g, b;
-		
+
 		for (index = start; index < end; index++) {
 			ren = index / WIDTH;
 			col = index % WIDTH;
 			pixel = array[index];
-			
+
 			value = juliaValue(col, ren);
-			
+
 			r = (int) (MAX_COLOR * (RED_PCT * value));
 			g = (int) (MAX_COLOR * (GREEN_PCT * value));
 			b = (int) (MAX_COLOR * (BLUE_PCT * value));
-			
+
 			array[index] =  (0xff000000)
 							| (((int) r) << 16)
 							| (((int) g) << 8)
 							| (((int) b) << 0);
 		}
 	}
-	
-	@Override 
+
+	@Override
 	protected void compute() {
 		if ( (end - start) <= MIN ) {
 			computeDirectly();
 		} else {
 			int mid = start + ((end - start) / 2);
-			invokeAll(new Example7(array, start, mid),
-					  new Example7(array, mid, end));
+			invokeAll(new Example9(array, start, mid),
+					  new Example9(array, mid, end));
 		}
 	}
-	
+
 	public static void main(String args[]) {
 		long startTime, stopTime;
 		double ms;
 		int array[];
 		ForkJoinPool pool;
-		
+
 		array = new int[WIDTH * HEIGHT];
-		
+
 		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
 		ms = 0;
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
 			pool = new ForkJoinPool(Utils.MAXTHREADS);
-			pool.invoke(new Example7(array, 0, array.length));
+			pool.invoke(new Example9(array, 0, array.length));
 
 			stopTime = System.currentTimeMillis();
 			ms += (stopTime - startTime);
 		}
-		
+
 		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
-		
+
 		final BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		bi.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {

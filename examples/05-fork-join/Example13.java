@@ -1,10 +1,10 @@
 // =================================================================
 //
-// File: Example6.java
+// File: Example13.java
 // Author: Pedro Perez
-// Description: This file implements the merge sort algorithm. The 
-//				time this implementation takes will be used as the 
-//				basis to calculate the improvement obtained with 
+// Description: This file implements the merge sort algorithm. The
+//				time this implementation takes will be used as the
+//				basis to calculate the improvement obtained with
 //				parallel technologies.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
@@ -17,22 +17,22 @@ import java.util.Arrays;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ForkJoinPool;
 
-public class Example6 extends RecursiveAction {
+public class Example13 extends RecursiveAction {
 	private static final int SIZE = 100_000_000;
 	private int A[], start, end;
-	
-	public Example6(int A[], int start, int end) {
+
+	public Example13(int A[], int start, int end) {
 		this.A = A;
 		this.start = start;
 		this.end = end;
 	}
-	
+
 	private void swap(int a[], int i, int j) {
 		int aux = a[i];
 		a[i] = a[j];
 		a[j] = aux;
 	}
-	
+
 	private int findPivot(int low, int high) {
 		for (int i = low + 1; i <= high; i++) {
 			if (A[low] > A[i]) {
@@ -43,10 +43,10 @@ public class Example6 extends RecursiveAction {
 		}
 		return -1;
 	}
-	
+
 	private int makePartition(int low, int high, int pivot) {
 		int i, j;
-		
+
 		i = low;
 		j = high;
 		while (i < j) {
@@ -60,40 +60,40 @@ public class Example6 extends RecursiveAction {
 		}
 		return i;
 	}
-	
-	@Override 
+
+	@Override
 	protected void compute() {
 		int pivot, pos;
-		
+
 		pivot = findPivot(start, end);
 		if (pivot != -1) {
 			pos = makePartition(start, end, pivot);
-			invokeAll(new Example6(A, start, pos - 1),
-					  new Example6(A, pos, end));
+			invokeAll(new Example13(A, start, pos - 1),
+					  new Example13(A, pos, end));
 		}
 	}
-	
+
 	public int[] getSortedArray() {
 		return A;
 	}
-	
+
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
 		long startTime, stopTime;
 		ForkJoinPool pool;
-		Example6 obj = null;
+		Example13 obj = null;
 		double ms;
-		
+
 		Utils.randomArray(array);
 		Utils.displayArray("before", array);
-		
+
 		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
 		ms = 0;
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
 			pool = new ForkJoinPool(Utils.MAXTHREADS);
-			obj = new Example6(Arrays.copyOf(array, array.length), 0, array.length - 1);
+			obj = new Example13(Arrays.copyOf(array, array.length), 0, array.length - 1);
 			pool.invoke(obj);
 
 			stopTime = System.currentTimeMillis();
@@ -103,4 +103,3 @@ public class Example6 extends RecursiveAction {
 		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
 	}
 }
-			

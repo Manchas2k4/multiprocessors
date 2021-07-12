@@ -16,5 +16,7 @@
 import java.util.Arrays;
 
 public class Example8 extends Thread {
+	private static final int SIZE = 100_000;
+	
 	// place your code here
 }

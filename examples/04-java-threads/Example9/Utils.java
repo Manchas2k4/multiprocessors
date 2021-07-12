@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class Utils {
 	private static final int DISPLAY = 100;
-	private static final int TOP_VALUE = 10_000;
+	public static final int TOP_VALUE = 10_000;
 	public static final Random r = new Random();
 
 	public static final int MAXTHREADS = Runtime.getRuntime().availableProcessors();

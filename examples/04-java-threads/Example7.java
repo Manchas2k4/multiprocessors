@@ -15,7 +15,7 @@
 // =================================================================
 
 public class Example7 extends Thread {
-	private static final int SIZE = 100_000_000;
+	private static final int MAXIMUM = 100_000_000;
 	
 	// place your code here
 }
