@@ -1,9 +1,9 @@
 // =================================================================
 //
-// File: Example5.java
+// File: Example8_Solution.java
 // Author: Pedro Perez
-// Description: This file implements the bubble sort algorithm. The
-//				time this implementation takes will be used as the
+// Description: This file implements the enumeration sort algorithm.
+// 				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
 //				parallel technologies.
 //
@@ -15,39 +15,41 @@
 
 import java.util.Arrays;
 
-public class Example5 {
-	private static final int SIZE = 10_000;
-	private int A[];
+public class Example8_Solution {
+	private static final int SIZE = 100_000;
+	private int array[];
 
-	public Example5(int A[]) {
-		this.A = A;
-	}
-
-	private void swap(int a[], int i, int j) {
-		int aux = a[i];
-		a[i] = a[j];
-		a[j] = aux;
+	public Example8_Solution(int array[]) {
+		this.array = array;
 	}
 
 	public void doTask() {
-		for(int i = A.length - 1; i > 0; i--){
-			for(int j = 0; j < i; j++){
-				if(A[j] > A[j + 1]){
-					swap(A, j, j + 1);
+		int temp[] = new int[array.length];
+		int count;
+
+		for (int i = 0; i < array.length; i++) {
+			count = 0;
+			for (int j = 0; j < array.length; j++) {
+				if (array[j] < array[i]) {
+					count++;
+				} else if (array[i] == array[j] && j < i) {
+					count++;
 				}
 			}
+			temp[count] = array[i];
 		}
+		array = Arrays.copyOf(temp, temp.length);
 	}
 
 	public int[] getSortedArray() {
-		return A;
+		return array;
 	}
 
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
 		long startTime, stopTime;
 		double ms;
-		Example5 obj = null;
+		Example8_Solution obj = null;
 
 		Utils.randomArray(array);
 		Utils.displayArray("before", array);
@@ -57,7 +59,7 @@ public class Example5 {
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
-			obj = new Example5(Arrays.copyOf(array, array.length));
+			obj = new Example8_Solution(Arrays.copyOf(array, array.length));
 			obj.doTask();
 
 			stopTime = System.currentTimeMillis();

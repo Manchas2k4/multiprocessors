@@ -2,7 +2,7 @@
 //
 // File: example2.cpp
 // Author(s):
-// Description: TThis file contains the code to count the number of
+// Description: This file contains the code to count the number of
 //				even numbers within an array. The time this implementation
 //				takes will be used as the basis to calculate the
 //				improvement obtained with parallel technologies.

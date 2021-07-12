@@ -47,12 +47,9 @@ public:
 	}
 
 	void calculate() {
-		double x;
-
-		x = start;
 		result = 0;
 		for (int i = 0; i < RECTS; i++) {
-			result += func(x + (i * dx));
+			result += func(start + (i * dx));
 		}
 		result = result * dx;
 	}

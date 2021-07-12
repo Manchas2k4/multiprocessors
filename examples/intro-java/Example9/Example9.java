@@ -1,10 +1,10 @@
 // =================================================================
 //
-// File: Example7.java
+// File: Example9.java
 // Author: Pedro Perez
-// Description: This file implements the code  will generate a 
-//				fractal image. The time this implementation takes 
-//				will be used as the basis to calculate the 
+// Description: This file implements the code  will generate a
+//				fractal image. The time this implementation takes
+//				will be used as the basis to calculate the
 //				improvement obtained with parallel technologies.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
@@ -15,7 +15,7 @@
 
 import java.awt.image.BufferedImage;
 
-public class Example7 {
+public class Example9 {
 	private static final int WIDTH = 1920;
 	private static final int HEIGHT = 1080;
 	private static final float SCALEX = 0.5f;
@@ -25,20 +25,20 @@ public class Example7 {
 	private static final float GREEN_PCT = 0.4f;
 	private static final float BLUE_PCT = 0.7f;
 	private int array[], width, height;
-	
-	public Example7(int array[], int width, int height) {
+
+	public Example9(int array[], int width, int height) {
 		this.array = array;
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	private int juliaValue(int x, int y) {
 		int k;
 		float jx = SCALEX * (float) (width / 2 - x) / (width / 2);
 		float jy = SCALEY * (float) (height / 2 - y) / (height / 2);
 		Complex c = new Complex(-0.8f, 0.156f);
 		Complex a = new Complex(jx, jy);
-	 
+
 		for (k = 0; k < 200; k++) {
 		    a = (a.mult(a)).add(c);
 		    if (a.magnitude2() > 1000) {
@@ -47,49 +47,49 @@ public class Example7 {
 		}
 		return 1;
 	}
-	
+
 	void doTask() {
 		int index, ren, col, value, pixel, r, g, b;
-		
+
 		for (index = 0; index < array.length; index++) {
 			ren = index / width;
 			col = index % width;
 			pixel = array[index];
-			
+
 			value = juliaValue(col, ren);
-			
+
 			r = (int) (MAX_COLOR * (RED_PCT * value));
 			g = (int) (MAX_COLOR * (GREEN_PCT * value));
 			b = (int) (MAX_COLOR * (BLUE_PCT * value));
-			
+
 			array[index] =  (0xff000000)
 							| (((int) r) << 16)
 							| (((int) g) << 8)
 							| (((int) b) << 0);
 		}
 	}
-	
+
 	public static void main(String args[]) {
 		long startTime, stopTime;
 		double ms;
-		
+
 		int array[] = new int[WIDTH * HEIGHT];
-		
+
 		System.out.printf("Starting...\n");
 		ms = 0;
-		Example7 e = new Example7(array, WIDTH, HEIGHT);
+		Example9 e = new Example9(array, WIDTH, HEIGHT);
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
-			
+
 			e.doTask();
-			
+
 			stopTime = System.currentTimeMillis();
-			
+
 			ms += (stopTime - startTime);
 		}
-		
+
 		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
-		
+
 		final BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		bi.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {

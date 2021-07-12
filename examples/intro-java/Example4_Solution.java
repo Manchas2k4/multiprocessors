@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example4.java
+// File: Example4_Solution.java
 // Author: Pedro Perez
 // Description: This file contains the code to count the number of
 //				even numbers within an array. The time this implementation
@@ -13,12 +13,12 @@
 //
 // =================================================================
 
-public class Example4 {
+public class Example4_Solution {
 	private static final int SIZE = 100_000_000;
 	private int array[];
 	private int result;
 
-	public Example4(int array[]) {
+	public Example4_Solution(int array[]) {
 		this.array = array;
 		this.result = 0;
 	}
@@ -29,7 +29,11 @@ public class Example4 {
 
 	public void calculate() {
 		result = 0;
-		// place your code here
+		for (int i = 0; i < array.length; i++) {
+			if (array[i] % 2 == 0) {
+				result++;
+			}
+		}
 	}
 
 	public static void main(String args[]) {
@@ -40,7 +44,7 @@ public class Example4 {
 		Utils.fillArray(array);
 		Utils.displayArray("array", array);
 
-		Example4 e = new Example4(array);
+		Example4_Solution e = new Example4_Solution(array);
 		acum = 0;
 		System.out.printf("Starting...\n");
 		for (int i = 0; i < Utils.N; i++) {

@@ -1,8 +1,8 @@
 // =================================================================
 //
-// File: Example5.java
+// File: Example13.java
 // Author: Pedro Perez
-// Description: This file implements the bubble sort algorithm. The
+// Description: This file implements the merge sort algorithm. The
 //				time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
 //				parallel technologies.
@@ -15,11 +15,11 @@
 
 import java.util.Arrays;
 
-public class Example5 {
-	private static final int SIZE = 10_000;
+public class Example13 {
+	private static final int SIZE = 100_000_000;
 	private int A[];
 
-	public Example5(int A[]) {
+	public Example13(int A[]) {
 		this.A = A;
 	}
 
@@ -29,14 +29,47 @@ public class Example5 {
 		a[j] = aux;
 	}
 
-	public void doTask() {
-		for(int i = A.length - 1; i > 0; i--){
-			for(int j = 0; j < i; j++){
-				if(A[j] > A[j + 1]){
-					swap(A, j, j + 1);
-				}
+	private int findPivot(int low, int high) {
+		for (int i = low + 1; i <= high; i++) {
+			if (A[low] > A[i]) {
+				return A[low];
+			} else if (A[low] < A[i]){
+				return A[i];
 			}
 		}
+		return -1;
+	}
+
+	private int makePartition(int low, int high, int pivot) {
+		int i, j;
+
+		i = low;
+		j = high;
+		while (i < j) {
+			swap(A, i , j);
+			while (A[i] < pivot) {
+				i++;
+			}
+			while (A[j] >= pivot) {
+				j--;
+			}
+		}
+		return i;
+	}
+
+	private void quick(int low, int high) {
+		int pivot, pos;
+
+		pivot = findPivot(low, high);
+		if (pivot != -1) {
+			pos = makePartition(low, high, pivot);
+			quick(low, pos - 1);
+			quick(pos, high);
+		}
+	}
+
+	public void doTask() {
+		quick(0, A.length - 1);
 	}
 
 	public int[] getSortedArray() {
@@ -46,8 +79,8 @@ public class Example5 {
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
 		long startTime, stopTime;
+		Example13 obj = null;
 		double ms;
-		Example5 obj = null;
 
 		Utils.randomArray(array);
 		Utils.displayArray("before", array);
@@ -57,7 +90,7 @@ public class Example5 {
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
-			obj = new Example5(Arrays.copyOf(array, array.length));
+			obj = new Example13(Arrays.copyOf(array, array.length));
 			obj.doTask();
 
 			stopTime = System.currentTimeMillis();
