@@ -1,7 +1,7 @@
 // =================================================================
 //
 // File: example7.c
-// Author: Pedro Perez
+// Author(s): 
 // Description: This file contains the code to brute-force all
 //				prime numbers less than MAXIMUM. The time this
 //				implementation takes will be used as the basis to
@@ -16,7 +16,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include "utils.h"
 
 #define MAXIMUM 1000000 //1e6

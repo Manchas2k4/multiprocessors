@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example6.c
+// File: example13.c
 // Author: Pedro Perez
 // Description: This file implements the quick sort algorithm. The
 //				time this implementation takes will be used as the

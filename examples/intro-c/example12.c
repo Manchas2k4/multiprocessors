@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example5.c
+// File: example12.c
 // Author: Pedro Perez
 // Description: This file implements the merge sort algorithm. The
 //				time this implementation takes will be used as the
