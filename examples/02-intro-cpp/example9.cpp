@@ -1,10 +1,10 @@
 // =================================================================
 //
-// File: example7.cpp
+// File: example9.cpp
 // Author: Pedro Perez
 // Description: This file implements the code  will generate a
 //				fractal image. Uses OpenCV, to compile:
-//				g++ example7.cpp `pkg-config --cflags --libs opencv`
+//				g++ example9.cpp `pkg-config --cflags --libs opencv`
 //
 //				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with

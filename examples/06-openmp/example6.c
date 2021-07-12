@@ -2,8 +2,8 @@
 //
 // File: example6.c
 // Author: Pedro Perez
-// Description: This file implements the quick sort algorithm using
-//				OpenMP.
+// Description: This file implements the multiplication of a matrix
+//				by a vector using OpenMP.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -13,104 +13,52 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <limits.h>
 #include "utils.h"
 
-#define SIZE 100000000 //1e8
+#define RENS 30000
+#define COLS 30000
 
-void swap(int *a, int i, int j) {
-	int aux = a[i];
-	a[i] = a[j];
-	a[j] = aux;
-}
+void matrix_vector(int *m, int *b, int *c) {
+	int i, j, acum;
 
-int find_pivot(int *A, int low, int high) {
-	int i;
-
-	for (i = low + 1; i <= high; i++) {
-		if (A[low] > A[i]) {
-			return A[low];
-		} else if (A[low] < A[i]){
-			return A[i];
+	for (i = 0; i < RENS; i++) {
+		acum = 0;
+		#pragma omp parallel for shared(m, b, i) reduction(+:acum)
+		for (j = 0; j < COLS; j++) {
+			acum += (m[(i * COLS) + j] * b[i]);
 		}
+		c[i] = acum;
 	}
-	return -1;
-}
-
-int make_partition(int *a, int low, int high, int pivot) {
-	int i, j;
-
-	i = low;
-	j = high;
-	while (i < j) {
-		swap(a, i , j);
-		while (a[i] < pivot) {
-			i++;
-		}
-		while (a[j] >= pivot) {
-			j--;
-		}
-	}
-	return i;
-}
-
-void quick(int *A, int low, int high) {
-	int pivot, pos;
-
-	pivot = find_pivot(A, low, high);
-	if (pivot != -1) {
-		pos = make_partition(A, low, high, pivot);
-		#pragma omp parallel
-		{
-			#pragma omp task shared(A) firstprivate(low, pos)
-			{
-				quick(A, low, pos - 1);
-			}
-			#pragma omp task shared(A) firstprivate(high, pos)
-			{
-				quick(A, pos, high);
-			}
-
-			#pragma omp taskwait
-		}
-	}
-}
-
-void quick_sort(int *A, int size) {
-	/*
-	#pragma omp parallel shared(A, size)
-	{
-		#pragma omp single nowait
-		{
-			quick(A, 0, size - 1);
-		}
-	}
-	*/
-	quick(A, 0, size - 1);
 }
 
 int main(int argc, char* argv[]) {
-	int i, j, *a, *aux;
+	int i, j, *m, *b, *c;
 	double ms;
 
-	a = (int *) malloc(sizeof(int) * SIZE);
-	aux = (int*) malloc(sizeof(int) * SIZE);
-	random_array(a, SIZE);
-	display_array("before", a);
+	m = (int*) malloc(sizeof(int) * RENS* COLS);
+	b = (int*) malloc(sizeof(int) * RENS);
+	c = (int*) malloc(sizeof(int) * RENS);
+
+	for (i = 0; i < RENS; i++) {
+		for (j = 0; j < COLS; j++) {
+			m[(i * COLS) + j] = (j + 1);
+		}
+		b[i] = 1;
+	}
 
 	printf("Starting...\n");
 	ms = 0;
 	for (i = 0; i < N; i++) {
 		start_timer();
 
-		memcpy(aux, a, sizeof(int) * SIZE);
-		quick_sort(a, SIZE);
+		matrix_vector(m, b, c);
 
 		ms += stop_timer();
 	}
-	display_array("after", aux);
+	display_array("c:", c);
 	printf("avg time = %.5lf ms\n", (ms / N));
 
-	free(a); free(aux);
+	free(m); free(b); free(c);
 	return 0;
 }

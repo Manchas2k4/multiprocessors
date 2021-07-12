@@ -1,10 +1,10 @@
 // =================================================================
 //
-// File: example8.cpp
+// File: example10.cpp
 // Author: Pedro Perez
 // Description: This file implements the code that blurs a given
 //				image. Uses OpenCV, to compile:
-//				g++ example8.cpp `pkg-config --cflags --libs opencv`
+//				g++ example10.cpp `pkg-config --cflags --libs opencv`
 //
 //				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
