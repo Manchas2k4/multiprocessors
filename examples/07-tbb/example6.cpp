@@ -2,10 +2,8 @@
 //
 // File: example6.cpp
 // Author: Pedro Perez
-// Description: This file implements the quick sort algorithm. The 
-//				time this implementation takes will be used as the 
-//				basis to calculate the improvement obtained with 
-//				parallel technologies.
+// Description: This file implements the multiplication of a matrix
+//				by a vector using Intel's TBB.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -15,113 +13,67 @@
 
 #include <iostream>
 #include <iomanip>
-#include <cstring>
-#include <tbb/parallel_invoke.h>
+#include <climits>
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
 #include "utils.h"
 
-const int SIZE = 100000000; //1e8
-const int GRAIN = 1000; // 1e3
+const int RENS = 30000; //1e5
+const int COLS = 30000;
 
 using namespace std;
 using namespace tbb;
 
-class QuickSort {
+class MatrixVector {
 private:
-	int *A, size;
-	
-	void swap(int *a, int i, int j) {
-		int aux = a[i];
-		a[i] = a[j];
-		a[j] = aux;
-	}
-
-	int findPivot(int low, int high) {
-		for (int i = low + 1; i <= high; i++) {
-			if (A[low] > A[i]) {
-				return A[low];
-			} else if (A[low] < A[i]){
-				return A[i];
-			}
-		}
-		return -1;
-	}
-	
-	int makePartition(int low, int high, int pivot) {
-		int i, j;
-		
-		i = low;
-		j = high;
-		while (i < j) {
-			swap(A, i , j);
-			while (A[i] < pivot) {
-				i++;
-			}
-			while (A[j] >= pivot) {
-				j--;
-			}
-		}
-		return i;
-	}
-
-	void quick(int low, int high) {
-		int pivot, pos;
-		
-		pivot = findPivot(low, high);
-		if (pivot != -1) {
-			pos = makePartition(low, high, pivot);
-			parallel_invoke (
-				[=] { quick(low, pos - 1); },
-				[=] { quick(pos, high); }
-			);
-		}
-	}
+	int *M, *B, *C;
 
 public:
-	QuickSort(int *a, int s) {
-		size = s;
-		A = new int[size];
-		memcpy(A, a, sizeof(int) * SIZE);
-	}
-	
-	~QuickSort() {
-		delete [] A;
-	}
-	
-	int* getSortedArray() const {
-		return A;
-	}
-	
-	void doTask() {
-		quick(0, size - 1);
+	MatrixVector(int *m, int *b, int *c) : M(m), B(b), C(c) {}
+
+	void operator() (const blocked_range<int> &r) const {
+		int acum;
+
+		acum = 0;
+		for (int i = r.begin(); i != r.end(); i++) {
+			acum = 0;
+			for (int j = 0; j < COLS; j++) {
+				acum += (M[(i * COLS) + j] * B[i]);
+			}
+			C[i] = acum;
+		}
 	}
 };
 
 int main(int argc, char* argv[]) {
-	int *a;
+	int i, j, *m, *b, *c;
 	double ms;
-	
-	a = new int[SIZE];
-	random_array(a, SIZE);
-	display_array("before", a);
-	
+
+	m = new int [RENS * COLS];
+	b = new int [RENS];
+	c = new int [RENS];
+
+	for (i = 0; i < RENS; i++) {
+		for (j = 0; j < COLS; j++) {
+			m[(i * COLS) + j] = (j + 1);
+		}
+		b[i] = 1;
+	}
+
 	cout << "Starting..." << endl;
 	ms = 0;
-	for (int i = 0; i < N; i++) {
+	for (i = 0; i < N; i++) {
 		start_timer();
-		
-		QuickSort obj(a, SIZE);
-		obj.doTask();
-		
+
+		parallel_for(blocked_range<int>(0, RENS),  MatrixVector(m, b, c));
+
 		ms += stop_timer();
-		
-		if (i == (N - 1)) {
-			memcpy(a, obj.getSortedArray(), sizeof(int) * SIZE);
-		}
 	}
-	
-	display_array("after", a);
+	display_array("c:", c);
 	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
-	
-	delete [] a;
+
+	delete [] m;
+	delete [] b;
+	delete [] c;
 	return 0;
 }
