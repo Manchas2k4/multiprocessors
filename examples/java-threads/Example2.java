@@ -1,9 +1,10 @@
 // =================================================================
 //
-// File: Example1.java
+// File: Example2.java
 // Author: Pedro Perez
-// Description: This file contains the code that adds all the
-//				elements of an integer array using Java's Threads. 
+// Description: This file contains the code that searches for the
+// 				smallest value stored in an array using using
+//				Java's Threads.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -11,51 +12,55 @@
 //
 // =================================================================
 
-public class Example1 extends Thread {
+
+public class Example2 extends Thread {
 	private static final int SIZE = 100_000_000;
 	private int array[], start, end;
-	private long result;
+	private int result;
 
-	public Example1(int array[], int start, int end) {
+	public Example2(int array[], int start, int end) {
 		this.array = array;
 		this.start = start;
 		this.end = end;
 		this.result = 0;
 	}
 
-	public long getResult() {
+	public int getResult() {
 		return result;
 	}
 
 	public void run() {
-		result = 0;
+		result = Integer.MAX_VALUE;
 		for (int i = start; i < end; i++) {
-			result += array[i];
+			result = (int) Math.min(result, array[i]);
 		}
 	}
 
 	public static void main(String args[]) {
 		long startTime, stopTime;
-		int array[], block;
-		Example1 threads[];
+		int array[], block, min = 0;
+		Example2 threads[];
 		double ms;
-		long result = 0;
 
 		array = new int[SIZE];
-		Utils.fillArray(array);
+		Utils.randomArray(array);
 		Utils.displayArray("array", array);
 
+		int pos = Math.abs(Utils.r.nextInt()) % SIZE;
+		System.out.printf("Setting value 0 at %d\n", pos);
+		array[pos] = 0;
+
 		block = SIZE / Utils.MAXTHREADS;
-		threads = new Example1[Utils.MAXTHREADS];
+		threads = new Example2[Utils.MAXTHREADS];
 
 		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
 		ms = 0;
 		for (int j = 1; j <= Utils.N; j++) {
 			for (int i = 0; i < threads.length; i++) {
 				if (i != threads.length - 1) {
-					threads[i] = new Example1(array, (i * block), ((i + 1) * block));
+					threads[i] = new Example2(array, (i * block), ((i + 1) * block));
 				} else {
-					threads[i] = new Example1(array, (i * block), SIZE);
+					threads[i] = new Example2(array, (i * block), SIZE);
 				}
 			}
 
@@ -74,13 +79,13 @@ public class Example1 extends Thread {
 			ms +=  (stopTime - startTime);
 
 			if (j == Utils.N) {
-				result = 0;
+				min = Integer.MAX_VALUE;
 				for (int i = 0; i < threads.length; i++) {
-					result += threads[i].getResult();
+					min = (int) Math.min(min, threads[i].getResult());
 				}
 			}
 		}
-		System.out.printf("sum = %d\n", result);
-		System.out.printf("avg time = %.5f ms\n", (ms / Utils.N));
+		System.out.printf("result = %d\n", min);
+		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
 	}
 }

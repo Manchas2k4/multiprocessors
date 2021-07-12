@@ -14,12 +14,15 @@
 //
 // =================================================================
 
-public class Example7_Solution {
+public class Example7_Solution extends Thread {
 	private static final int SIZE = 100_000_000;
 	private boolean array[];
+	private int start, end;
 
-	public Example7_Solution(boolean array[]) {
+	public Example7_Solution(boolean array[], int start, int end) {
 		this.array = array;
+		this.start = start;
+		this.end = end;
 	}
 
 	private boolean isPrime(int n) {
@@ -31,35 +34,53 @@ public class Example7_Solution {
 		return true;
 	}
 
-	public void calculate() {
-		for (int i = 2; i < array.length; i++) {
+	public void run() {
+		for (int i = start; i < end; i++) {
 			array[i] = isPrime(i);
 		}
 	}
 
 	public static void main(String args[]) {
 		boolean array[] = new boolean[SIZE + 1];
+		Example7_Solution threads[];
 		long startTime, stopTime;
-		double acum = 0;
+		double ms;
+		int block;
 
-		System.out.println("At first, neither is a prime. We will display to TOP_VALUE:");
+		array = new boolean[SIZE];
 		for (int i = 2; i < Utils.TOP_VALUE; i++) {
 			array[i] = false;
 			System.out.print("" + i + ", ");
 		}
 		System.out.println("");
 
-		Example7_Solution e = new Example7_Solution(array);
-		acum = 0;
-		System.out.printf("Starting...\n");
-		for (int i = 0; i < Utils.N; i++) {
+		block = SIZE / Utils.MAXTHREADS;
+		threads = new Example7_Solution[Utils.MAXTHREADS];
+
+		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
+		ms = 0;
+		for (int j = 1; j <= Utils.N; j++) {
+			for (int i = 0; i < threads.length; i++) {
+				if (i != threads.length - 1) {
+					threads[i] = new Example7_Solution(array, (i * block), ((i + 1) * block));
+				} else {
+					threads[i] = new Example7_Solution(array, (i * block), SIZE);
+				}
+			}
+
 			startTime = System.currentTimeMillis();
-
-			e.calculate();
-
+			for (int i = 0; i < threads.length; i++) {
+				threads[i].start();
+			}
+			for (int i = 0; i < threads.length; i++) {
+				try {
+					threads[i].join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			stopTime = System.currentTimeMillis();
-
-			acum += (stopTime - startTime);
+			ms +=  (stopTime - startTime);
 		}
 		System.out.println("Expanding the numbers that are prime to TOP_VALUE:");
 		for (int i = 2; i < Utils.TOP_VALUE; i++) {
@@ -68,6 +89,6 @@ public class Example7_Solution {
 			}
 		}
 		System.out.println("");
-		System.out.printf("avg time = %.5f ms\n", (acum / Utils.N));
+		System.out.printf("avg time = %.5f ms\n", (ms / Utils.N));
 	}
 }

@@ -1,8 +1,8 @@
 // =================================================================
 //
-// File: Example2.java
+// File: Example3.java
 // Author: Pedro Perez
-// Description: This file contains the code to perform the numerical 
+// Description: This file contains the code to perform the numerical
 //				integration of a function within a defined interval
 //				using Threads.
 //
@@ -18,24 +18,24 @@ class Sin implements Function {
 	}
 }
 
-public class Example2 extends Thread {
+public class Example3 extends Thread {
 	private static final int RECTS = 1_000_000_000;
 	private double x, dx, result;
 	private int start, end;
 	private Function fn;
-	
-	public Example2(double a, double b, Function fn, int start, int end) {
+
+	public Example3(double a, double b, Function fn, int start, int end) {
 		this.x = Math.min(a, b);
 		this.dx = (Math.max(a,b) - Math.min(a, b)) / RECTS;
 		this.fn = fn;
 		this.start = start;
 		this.end = end;
 	}
-	
+
 	public double getResult() {
 		return result;
 	}
-	
+
 	public void run() {
 		result = 0;
 		for (int i = start; i < end; i++) {
@@ -43,27 +43,27 @@ public class Example2 extends Thread {
 		}
 		result = result * dx;
 	}
-	
+
 	public static void main(String args[]) {
 		long startTime, stopTime;
 		int block;
-		Example2 threads[];
+		Example3 threads[];
 		double ms, result = 0;
-		
+
 		block = RECTS / Utils.MAXTHREADS;
-		threads = new Example2[Utils.MAXTHREADS];
-		
+		threads = new Example3[Utils.MAXTHREADS];
+
 		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
 		ms = 0;
 		for (int j = 1; j <= Utils.N; j++) {
 			for (int i = 0; i < threads.length; i++) {
 				if (i != threads.length - 1) {
-					threads[i] = new Example2(0, Math.PI, new Sin(), (i * block), ((i + 1) * block));
+					threads[i] = new Example3(0, Math.PI, new Sin(), (i * block), ((i + 1) * block));
 				} else {
-					threads[i] = new Example2(0, Math.PI, new Sin(), (i * block), RECTS);
+					threads[i] = new Example3(0, Math.PI, new Sin(), (i * block), RECTS);
 				}
 			}
-			
+
 			startTime = System.currentTimeMillis();
 			for (int i = 0; i < threads.length; i++) {
 				threads[i].start();
@@ -77,7 +77,7 @@ public class Example2 extends Thread {
 			}
 			stopTime = System.currentTimeMillis();
 			ms +=  (stopTime - startTime);
-			
+
 			if (j == Utils.N) {
 				result = 0;
 				for (int i = 0; i < threads.length; i++) {
@@ -89,4 +89,3 @@ public class Example2 extends Thread {
 		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
 	}
 }
-			
