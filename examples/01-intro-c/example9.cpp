@@ -4,7 +4,7 @@
 // Author: Pedro Perez
 // Description: This file implements the code  will generate a
 //				fractal image. Uses OpenCV, to compile:
-//				g++ example9.cpp `pkg-config --cflags --libs opencv`
+//				g++ example9.cpp `pkg-config --cflags --libs opencv4`
 //
 //				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
@@ -25,12 +25,12 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "utils.h"
 
-#define WIDTH		1920
+#define WIDTH     1920
 #define HEIGHT		1080
 #define SCALEX		0.500
 #define SCALEY		0.500
 #define N       	10
-#define MAX_COLOR 	255
+#define MAX_COLOR 255
 #define RED_PCT		0.2
 #define GREEN_PCT	0.4
 #define BLUE_PCT	0.7
@@ -99,9 +99,12 @@ int main(int argc, char* argv[]) {
   }
 
   printf("avg time = %.5lf ms\n", (acum / N));
+  /*
   cv::namedWindow("CPU Julia | c(-0.8, 0.156)", cv::WINDOW_AUTOSIZE);
   cv::imshow("CPU Julia | c(-0.8, 0.156)", img);
 
   cv::waitKey(0);
+  */
+  cv::imwrite("julia_set.jpg", img);
   return 0;
 }

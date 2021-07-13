@@ -4,7 +4,7 @@
 // Author: Pedro Perez
 // Description: This file implements the code that blurs a given
 //				image. Uses OpenCV and OpenMP, to compile:
-//				g++ example10.cpp `pkg-config --cflags --libs opencv` -fopenmp
+//				g++ example10.cpp `pkg-config --cflags --libs opencv4` -fopenmp
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -34,8 +34,8 @@ void blur_pixel(cv::Mat &src, cv::Mat &dest, int ren, int col) {
 	r = 0; g = 0; b = 0;
 	for (int i = -side_pixels; i <= side_pixels; i++) {
 		for (int j = -side_pixels; j <= side_pixels; j++) {
-			tmp_ren = MIN_VAL( MAX_VAL(ren + i, 0), src.rows - 1);
-			tmp_col = MIN_VAL( MAX_VAL(col + j, 0), src.cols - 1);
+			tmp_ren = MIN( MAX(ren + i, 0), src.rows - 1);
+			tmp_col = MIN( MAX(col + j, 0), src.cols - 1);
 
 			r += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[RED];
 			g += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[GREEN];
@@ -82,13 +82,16 @@ int main(int argc, char* argv[]) {
 
 	printf("avg time = %.5lf ms\n", (acum / N));
 
-	cv::namedWindow("Lenna (Original)", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Lenna (Original)", src);
+	/*
+	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Original", src);
 
-	cv::namedWindow("Lenna (Blur)", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Lenna (Blur)", dest);
+	cv::namedWindow("Blur", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Blur", dest);
 
 	cv::waitKey(0);
+	*/
+	cv::imwrite("blur.png", dest);
 
 	return 0;
 }

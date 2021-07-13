@@ -4,9 +4,9 @@
 // Author: Pedro Perez
 // Description: This file implements the code that blurs a given
 //				image.using Intel's TBB. Uses OpenCV, to compile:
-//				g++ example10.cpp -ltbb `pkg-config --cflags --libs opencv`
+//			  g++ example10.cpp `pkg-config --cflags --libs opencv4` -ltbb
 //
-//				The time this implementation takes will be used as the 
+//				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
 //				parallel technologies.
 //
@@ -47,8 +47,8 @@ private:
 		r = 0; g = 0; b = 0;
 		for (int i = -side_pixels; i <= side_pixels; i++) {
 			for (int j = -side_pixels; j <= side_pixels; j++) {
-				tmp_ren = MIN_VAL( MAX_VAL(ren + i, 0), src.rows - 1);
-				tmp_col = MIN_VAL( MAX_VAL(col + j, 0), src.cols - 1);
+				tmp_ren = MIN( MAX(ren + i, 0), src.rows - 1);
+				tmp_col = MIN( MAX(col + j, 0), src.cols - 1);
 
 				r += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[RED];
 				g += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[GREEN];
@@ -101,13 +101,17 @@ int main(int argc, char* argv[]) {
 
 	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
 
-	namedWindow("Image (Original)", WINDOW_AUTOSIZE);
-    imshow("Image (Original)", src);
+	/*
+	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
+	cv::imshow("Original", src);
 
-	namedWindow("Image (Blur)", WINDOW_AUTOSIZE);
-    imshow("Image (Blur)", dest);
+	cv::namedWindow("Blur", cv::WINDOW_AUTOSIZE);
+	cv::imshow("Blur", dest);
 
-	waitKey(0);
+	cv::waitKey(0);
+	*/
+
+	cv::imwrite("blur.png", dest);
 
 	return 0;
 }

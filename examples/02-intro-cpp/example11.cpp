@@ -4,7 +4,7 @@
 // Author(s):
 // Description: This file implements the code that transforms a
 //				grayscale image. Uses OpenCV, to compile:
-//				g++ example8.cpp `pkg-config --cflags --libs opencv`
+//				g++ example11.cpp `pkg-config --cflags --libs opencv4`
 //
 //				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
@@ -55,6 +55,7 @@ int main(int argc, char* argv[]) {
 
 	printf("avg time = %.5lf ms\n", (acum / N));
 
+	/*
 	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
 	cv::imshow("Original", src);
 
@@ -62,6 +63,9 @@ int main(int argc, char* argv[]) {
 	cv::imshow("Gray scale", dest);
 
 	cv::waitKey(0);
+	*/
+
+	cv::imwrite("gray_scale.png", dest);
 
 	return 0;
 }

@@ -5,7 +5,7 @@
 // Description: This file implements the code  will generate a
 //				fractal image using Intel's TBB. Uses OpenCV, to
 //				compile:
-//				g++ example9.cpp -ltbb `pkg-config --cflags --libs opencv`
+//			  g++ example9.cpp `pkg-config --cflags --libs opencv4` -ltbb
 //
 //				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
@@ -30,7 +30,7 @@
 #define HEIGHT		1080
 #define SCALEX		0.500
 #define SCALEY		0.500
-#define MAX_COLOR 	255
+#define MAX_COLOR 255
 #define RED_PCT		0.2
 #define GREEN_PCT	0.4
 #define BLUE_PCT	0.7
@@ -103,24 +103,27 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-    double ms;
-    Mat img = Mat(HEIGHT, WIDTH, CV_8UC3);
+	double ms;
+	Mat img = Mat(HEIGHT, WIDTH, CV_8UC3);
 
 	ms = 0;
-    for (int i = 0; i < N; i++) {
-        start_timer();
+	for (int i = 0; i < N; i++) {
+		start_timer();
 
 		JuliaSet obj(img);
 		parallel_for(blocked_range<int>(0, img.rows),  obj);
 
 		ms += stop_timer();
-    }
+	}
 
-    cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
-	namedWindow("CPU Julia | c(-0.8, 0.156)", WINDOW_AUTOSIZE);
-    imshow("CPU Julia | c(-0.8, 0.156)", img);
+	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
+	/*
+  cv::namedWindow("CPU Julia", cv::WINDOW_AUTOSIZE);
+  cv::imshow("CPU Julia", img);
 
-	waitKey(0);
+  cv::waitKey(0);
+  */
+  cv::imwrite("julia_set.jpg", img);
 
-    return 0;
+	return 0;
 }

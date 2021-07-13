@@ -21,8 +21,8 @@
 #include <sys/time.h>
 #include <sys/types.h>
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
+#define MMIN(a,b) (((a)<(b))?(a):(b))
+#define MMAX(a,b) (((a)>(b))?(a):(b))
 
 #define N 				10
 #define DISPLAY		100

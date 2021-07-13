@@ -3,7 +3,8 @@
 // File: example10.cpp
 // Author(s):
 // Description: This file implements the code that transforms a
-//				grayscale image using Intel's TBB.
+//				grayscale image using Intel's TBB. Uses OpenCV, to compile:
+//			  g++ example10.cpp `pkg-config --cflags --libs opencv4` -ltbb
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -53,13 +54,17 @@ int main(int argc, char* argv[]) {
 
 	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
 
-	namedWindow("Image (Original)", WINDOW_AUTOSIZE);
-    imshow("Image (Original)", src);
+	/*
+	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
+	cv::imshow("Original", src);
 
-	namedWindow("Image (Gray)", WINDOW_AUTOSIZE);
-    imshow("Image (Gray)", dest);
+	cv::namedWindow("Gray scale", cv::WINDOW_AUTOSIZE);
+	cv::imshow("Gray scale", dest);
 
-	waitKey(0);
+	cv::waitKey(0);
+	*/
+
+	cv::imwrite("gray_scale.png", dest);
 
 	return 0;
 }

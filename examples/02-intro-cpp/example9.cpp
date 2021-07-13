@@ -4,7 +4,7 @@
 // Author: Pedro Perez
 // Description: This file implements the code  will generate a
 //				fractal image. Uses OpenCV, to compile:
-//				g++ example9.cpp `pkg-config --cflags --libs opencv`
+//				g++ example9.cpp `pkg-config --cflags --libs opencv4`
 //
 //				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
@@ -16,6 +16,8 @@
 //
 // =================================================================
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -23,100 +25,86 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "utils.h"
 
-#define WIDTH		1920
+#define WIDTH     1920
 #define HEIGHT		1080
 #define SCALEX		0.500
 #define SCALEY		0.500
-#define MAX_COLOR 	255
+#define N       	10
+#define MAX_COLOR 255
 #define RED_PCT		0.2
 #define GREEN_PCT	0.4
 #define BLUE_PCT	0.7
 
-using namespace std;
-using namespace cv;
+typedef struct complex {
+    float real, img;
+} Complex;
 
-class MyComplex {
-private:
-	float real, img;
+float magnitude2(const Complex *a) {
+    return (a->real * a->real) + (a->img * a->img);
+}
 
-public:
-	MyComplex(float r, float i) : real(r), img(i) {}
+void mult(Complex *result, const Complex *a, const Complex *b) {
+    result->real = (a->real * b->real) - (a->img * b->img);
+    result->img = (a->img * b->real) + (a->real * b->img);
+}
 
-	float magnitude2() const {
-		return (real * real) + (img * img);
-	}
+void add(Complex *result, const Complex *a, const Complex *b) {
+    result->real = a->real + b->real;
+    result->img = a->img + b->img;
+}
 
-	MyComplex operator*(const MyComplex &a) {
-		return MyComplex( ((real * a.real) - (img * a.img)),
-		 				((img * a.real) + (real * a.img)) );
-	}
+int julia_value(int x, int y, int width, int height) {
+    int k;
+    float jx = SCALEX * (float) (width / 2 - x) / (width / 2);
+    float jy = SCALEY * (float) (height / 2 - y) / (height / 2);
+    Complex c = {-0.8, 0.156};
+    Complex a = {jx, jy};
+    Complex aux;
 
-	MyComplex operator+(const MyComplex &a) {
-		return MyComplex( (real + a.real),
-		 				(img + a.img) );
-	}
-};
+    for (k = 0; k < 200; k++) {
+        mult(&aux, &a, &a);
+        add(&a, &aux, &c);
+        if (magnitude2(&a) > 1000) {
+            return 0;
+        }
+    }
+    return 1;
+}
 
+void build_julia_set(cv::Mat &img) {
+	int value;
 
-class JuliaSet {
-private:
-	Mat &img;
-
-	int juliaValue(int x, int y, int width, int height) {
-		int k;
-		float jx = SCALEX * (float) (width / 2 - x) / (width / 2);
-		float jy = SCALEY * (float) (height / 2 - y) / (height / 2);
-		MyComplex c(-0.8, 0.156);
-		MyComplex a(jx, jy);
-
-		for (k = 0; k < 200; k++) {
-		    a = a*a + c;
-		    if (a.magnitude2() > 1000) {
-		        return 0;
-		    }
-		}
-		return 1;
-	}
-
-public:
-	JuliaSet(Mat &image) : img(image) {}
-
-	void doTask() {
-		int value;
-
-		for(int i = 0; i < img.rows; i++) {
-			for(int j = 0; j < img.cols; j++) {
-				value = juliaValue(i, j, img.rows, img.cols);
-				img.at<cv::Vec3b>(i,j)[RED] =
-          (unsigned char) (MAX_COLOR * RED_PCT * value);
-				img.at<cv::Vec3b>(i,j)[GREEN] =
-          (unsigned char) (MAX_COLOR * GREEN_PCT * value);
-				img.at<cv::Vec3b>(i,j)[BLUE] =
-          (unsigned char) (MAX_COLOR * BLUE_PCT * value);
-			}
+	for(int i = 0; i < img.rows; i++) {
+		for(int j = 0; j < img.cols; j++) {
+			value = julia_value(i, j, img.rows, img.cols);
+			img.at<cv::Vec3b>(i,j)[RED] = (unsigned char) (MAX_COLOR * RED_PCT * value);
+			img.at<cv::Vec3b>(i,j)[GREEN] = (unsigned char) (MAX_COLOR * GREEN_PCT * value);
+			img.at<cv::Vec3b>(i,j)[BLUE] = (unsigned char) (MAX_COLOR * BLUE_PCT * value);
 		}
 	}
-};
+}
 
 int main(int argc, char* argv[]) {
-	double ms;
-	Mat img = Mat(HEIGHT, WIDTH, CV_8UC3);
+  int i;
+  double acum;
+  cv::Mat img = cv::Mat(HEIGHT, WIDTH, CV_8UC3);
 
-	ms = 0;
-	JuliaSet obj(img);
-	for (int i = 0; i < N; i++) {
-		start_timer();
+  acum = 0;
+  for (i = 0; i < N; i++) {
+    start_timer();
 
-		obj.doTask();
+    build_julia_set(img);
 
-		ms += stop_timer();
-	}
+    acum += stop_timer();
+  }
 
-	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
-	namedWindow("CPU Julia | c(-0.8, 0.156)", WINDOW_AUTOSIZE);
-	imshow("CPU Julia | c(-0.8, 0.156)", img);
+  printf("avg time = %.5lf ms\n", (acum / N));
+  /*
+  cv::namedWindow("CPU Julia", cv::WINDOW_AUTOSIZE);
+  cv::imshow("CPU Julia", img);
 
-	waitKey(0);
-
-	return 0;
+  cv::waitKey(0);
+  */
+  cv::imwrite("julia_set.jpg", img);
+  return 0;
 }
