@@ -15,6 +15,8 @@
 #include <iomanip>
 #include <cstring>
 #include <cmath>
+#include <tbb/parallel_for.h>
+#include <tbb/blocked_range.h>
 #include "utils.h"
 
 const int SIZE = 100000;

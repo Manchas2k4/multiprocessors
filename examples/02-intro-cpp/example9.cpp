@@ -53,36 +53,44 @@ void add(Complex *result, const Complex *a, const Complex *b) {
     result->img = a->img + b->img;
 }
 
-int julia_value(int x, int y, int width, int height) {
-    int k;
-    float jx = SCALEX * (float) (width / 2 - x) / (width / 2);
-    float jy = SCALEY * (float) (height / 2 - y) / (height / 2);
-    Complex c = {-0.8, 0.156};
-    Complex a = {jx, jy};
-    Complex aux;
+class JuliaSet {
+private:
+	cv::Mat &img;
 
-    for (k = 0; k < 200; k++) {
-        mult(&aux, &a, &a);
-        add(&a, &aux, &c);
-        if (magnitude2(&a) > 1000) {
-            return 0;
-        }
-    }
-    return 1;
-}
+	int juliaValue(int x, int y, int width, int height) {
+		int k;
+		float jx = SCALEX * (float) (width / 2 - x) / (width / 2);
+		float jy = SCALEY * (float) (height / 2 - y) / (height / 2);
+		Complex c = {-0.8, 0.156};
+		Complex a = {jx, jy};
+		Complex aux;
 
-void build_julia_set(cv::Mat &img) {
+		for (k = 0; k < 200; k++) {
+			mult(&aux, &a, &a);
+			add(&a, &aux, &c);
+			if (magnitude2(&a) > 1000) {
+				return 0;
+			}
+		}
+		return 1;
+	}
+	
+public:
+	JuliaSet(cv::Mat &image) : img(image) {}
+	
+	void doTask() {
 	int value;
 
 	for(int i = 0; i < img.rows; i++) {
 		for(int j = 0; j < img.cols; j++) {
-			value = julia_value(i, j, img.rows, img.cols);
+			value = juliaValue(i, j, img.rows, img.cols);
 			img.at<cv::Vec3b>(i,j)[RED] = (unsigned char) (MAX_COLOR * RED_PCT * value);
 			img.at<cv::Vec3b>(i,j)[GREEN] = (unsigned char) (MAX_COLOR * GREEN_PCT * value);
 			img.at<cv::Vec3b>(i,j)[BLUE] = (unsigned char) (MAX_COLOR * BLUE_PCT * value);
 		}
+		}
 	}
-}
+};
 
 int main(int argc, char* argv[]) {
   int i;
@@ -93,7 +101,8 @@ int main(int argc, char* argv[]) {
   for (i = 0; i < N; i++) {
     start_timer();
 
-    build_julia_set(img);
+    JuliaSet obj(img);
+	obj.doTask();
 
     acum += stop_timer();
   }

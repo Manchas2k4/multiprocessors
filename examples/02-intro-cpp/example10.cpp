@@ -28,37 +28,45 @@
 
 #define BLUR_WINDOW 15
 
-void blur_pixel(cv::Mat &src, cv::Mat &dest, int ren, int col) {
-	int side_pixels, cells;
-	int tmp_ren, tmp_col;
-	float r, g, b;
+class BlurImage {
+private:
+	cv::Mat &src, &dest;
 
-	side_pixels = (BLUR_WINDOW - 1) / 2;
-	cells = (BLUR_WINDOW * BLUR_WINDOW);
-	r = 0; g = 0; b = 0;
-	for (int i = -side_pixels; i <= side_pixels; i++) {
-		for (int j = -side_pixels; j <= side_pixels; j++) {
-			tmp_ren = MIN( MAX(ren + i, 0), src.rows - 1);
-			tmp_col = MIN( MAX(col + j, 0), src.cols - 1);
+	void blurPixel(int ren, int col) const {
+		int side_pixels, cells;
+		int tmp_ren, tmp_col;
+		float r, g, b;
 
-			r += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[RED];
-			g += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[GREEN];
-			b += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[BLUE];
+		side_pixels = (BLUR_WINDOW - 1) / 2;
+		cells = (BLUR_WINDOW * BLUR_WINDOW);
+		r = 0; g = 0; b = 0;
+		for (int i = -side_pixels; i <= side_pixels; i++) {
+			for (int j = -side_pixels; j <= side_pixels; j++) {
+				tmp_ren = MIN( MAX(ren + i, 0), src.rows - 1);
+				tmp_col = MIN( MAX(col + j, 0), src.cols - 1);
+
+				r += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[RED];
+				g += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[GREEN];
+				b += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[BLUE];
+			}
 		}
+
+		dest.at<cv::Vec3b>(ren, col)[RED] =  (unsigned char) (r / cells);
+		dest.at<cv::Vec3b>(ren, col)[GREEN] = (unsigned char) (g / cells);
+		dest.at<cv::Vec3b>(ren, col)[BLUE] = (unsigned char) (b / cells);
 	}
 
-	dest.at<cv::Vec3b>(ren, col)[RED] =  (unsigned char) (r / cells);
-	dest.at<cv::Vec3b>(ren, col)[GREEN] = (unsigned char) (g / cells);
-	dest.at<cv::Vec3b>(ren, col)[BLUE] = (unsigned char) (b / cells);
-}
+public:
+	BlurImage(cv::Mat &s, cv::Mat &d) : src(s), dest(d) {}
 
-void blur(cv::Mat &src, cv::Mat &dest) {
-	for(int i = 0; i < src.rows; i++) {
-		for(int j = 0; j < src.cols; j++) {
-			blur_pixel(src, dest, i, j);
+	void doTask() {
+		for(int i = 0; i < src.rows; i++) {
+			for(int j = 0; j < src.cols; j++) {
+				blurPixel(i, j);
+			}
 		}
 	}
-}
+};
 
 int main(int argc, char* argv[]) {
 	int i;
@@ -80,7 +88,8 @@ int main(int argc, char* argv[]) {
 	for (i = 0; i < N; i++) {
 		start_timer();
 
-		blur(src, dest);
+		BlurImage obj(src, dest);
+		obj.doTask();
 
 		acum += stop_timer();
 	}
