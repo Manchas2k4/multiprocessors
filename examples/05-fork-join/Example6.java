@@ -3,7 +3,7 @@
 // File: Example6.java
 // Author: Pedro Perez
 // Description: This file implements the multiplication of a matrix
-//				by a vector using using Java's Fork-Join.
+//				by a vector using Java's Fork-Join.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial

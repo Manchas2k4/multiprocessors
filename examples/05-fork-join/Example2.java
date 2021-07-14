@@ -3,7 +3,7 @@
 // File: Example2.java
 // Author: Pedro Perez
 // Description: This file contains the code that searches for the
-// 				smallest value stored in an array using using Java's
+// 				smallest value stored in an array using Java's
 //				Fork-Join.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.

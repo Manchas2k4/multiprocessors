@@ -3,7 +3,7 @@
 // File: Example7.java
 // Author(s):
 // Description: This file contains the code to brute-force all
-//				prime numbers less than MAXIMUM using using Java's
+//				prime numbers less than MAXIMUM using Java's
 //				Fork-Join.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.

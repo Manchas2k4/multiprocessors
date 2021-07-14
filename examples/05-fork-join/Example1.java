@@ -3,7 +3,7 @@
 // File: Example1.java
 // Author: Pedro Perez
 // Description: This file contains the code that adds all the
-//				elements of an integer array using using Java's
+//				elements of an integer array using Java's
 //				Fork-Join.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.

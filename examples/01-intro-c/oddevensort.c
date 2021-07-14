@@ -3,7 +3,9 @@
 // File: example5.c
 // Author: Pedro Perez
 // Description: This file contains the code that implements the
-//				bubble sort algorithm using OpenMP.
+//				bubble sort algorithm. The time this implementation takes
+//				will be used as the basis to calculate the improvement
+//				obtained with parallel technologies.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -18,38 +20,31 @@
 
 #define SIZE 10000
 
-void swap(int *A, int i, int j) {
-  int aux = A[i];
-  A[i] = A[j];
-  A[j] = aux;
-}
 
 void oddEvenSort(int *arr, int size) {
-	int step, i, temp;
+	int odd, even, is_sorted = 0;
 
-  #pragma omp parallel shared(arr, size) private(i, temp, step)
-	for (step = 0; step < size; step++) {
-    if (step % 2 == 0) {
-      // even index
-      #pragma omp for
-  		for(i = 0; i <= size - 2; i += 2) {
-  			if (arr[i] > arr[i + 1]) {
-  				temp = arr[i];
-          arr[i] = arr[i + 1];
-          arr[i + 1] = temp;
-  			}
-  		}
-    } else {
-  		// odd index
-      #pragma omp for
-  		for(i = 1; i <= size - 2; i += 2) {
-  			if (arr[i] > arr[i + 1]) {
-          temp = arr[i];
-          arr[i] = arr[i + 1];
-          arr[i + 1] = temp;
-  			}
-  		}
-    }
+	while (!is_sorted) {
+
+		// odd index
+		odd = 1;
+		for(int i = 1; i <= size - 2; i += 2) {
+			if (arr[i] > arr[i + 1]) {
+				swap(arr, i, i + 1);
+				odd = 0;
+			}
+		}
+
+		// even index
+		even = 1;
+		for(int i = 0; i <= size - 2; i += 2) {
+			if (arr[i] > arr[i + 1]) {
+				swap(arr, i, i + 1);
+				even = 0;
+			}
+		}
+
+		is_sorted = odd && even;
 	}
 }
 

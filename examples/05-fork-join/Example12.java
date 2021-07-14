@@ -2,10 +2,8 @@
 //
 // File: Example12.java
 // Author: Pedro Perez
-// Description: This file implements the merge sort algorithm. The
-//				time this implementation takes will be used as the
-//				basis to calculate the improvement obtained with
-//				parallel technologies.
+// Description: This file implements the merge sort algorithm using 
+//				Java's Fork-Join.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
