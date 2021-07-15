@@ -26,17 +26,17 @@ public class Example5 extends Thread {
 	}
 
 	private void doSort() {
-    int aux;
+		int aux;
 
-    for (int i = end - 1; i > start; i--) {
-      for (int j = 0; j < i; j++) {
-        if (array[j] > array[j + 1]) {
-          aux = array[j];
-          array[j] = array[j + 1];
-          array[j + 1] = aux;
-        }
-      }
-    }
+		for (int i = end - 1; i > start; i--) {
+		  for (int j = 0; j < i; j++) {
+			if (array[j] > array[j + 1]) {
+			  aux = array[j];
+			  array[j] = array[j + 1];
+			  array[j + 1] = aux;
+			}
+		  }
+		}
 	}
 
 	private void mergeAndCopy() {
