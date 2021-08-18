@@ -26,7 +26,7 @@ int min_value(int *array, int size) {
 
 	result = INT_MAX;
 	for (i = 0; i < size; i++) {
-		result = MIN(result, array[i]);
+		result = MMIN(result, array[i]);
 	}
 	return result;
 }

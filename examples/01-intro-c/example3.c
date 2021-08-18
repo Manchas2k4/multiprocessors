@@ -30,8 +30,8 @@ double integration(double a, double b, double (*fn) (double)) {
 	double high, dx, acum, x;
 	int i;
 
-	x = MIN(a, b);
-	dx = (MAX(a, b) - MIN(a, b)) / RECTS;
+	x = MMIN(a, b);
+	dx = (MMAX(a, b) - MMIN(a, b)) / RECTS;
 	acum = 0;
 	for (i = 0; i < RECTS; i++) {
 		acum += fn(x + (i * dx));
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 	for (i = 0; i < N; i++) {
 		start_timer();
 
-		result = integration(0, PI, function);
+		result = integration(0, PI, sin);
 
 		ms += stop_timer();
 	}
