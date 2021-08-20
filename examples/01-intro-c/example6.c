@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 	int i, j, *m, *b, *c;
 	double ms;
 
-	m = (int*) malloc(sizeof(int) * RENS* COLS);
+	m = (int*) malloc(sizeof(int) * RENS * COLS);
 	b = (int*) malloc(sizeof(int) * RENS);
 	c = (int*) malloc(sizeof(int) * RENS);
 

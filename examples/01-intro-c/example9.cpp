@@ -29,7 +29,6 @@
 #define HEIGHT		1080
 #define SCALEX		0.500
 #define SCALEY		0.500
-#define N       	10
 #define MAX_COLOR 255
 #define RED_PCT		0.2
 #define GREEN_PCT	0.4

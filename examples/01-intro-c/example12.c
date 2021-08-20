@@ -19,7 +19,7 @@
 #include "utils.h"
 
 #define SIZE 100000000 //1e7
-#define GRAIN 1000 // 1e3
+#define GRAIN 10000 // 1e3
 
 void swap(int *a, int i, int j) {
 	int aux = a[i];
