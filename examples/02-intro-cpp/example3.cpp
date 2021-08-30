@@ -25,10 +25,6 @@ const int RECTS = 1000000000; //1e9
 
 using namespace std;
 
-double function(double x) {
-	return sin(x);
-}
-
 class Integration {
 private:
 	double start, dx, result;
@@ -40,7 +36,6 @@ public:
 		start = min(a, b);
 		dx = (max(a, b) - min(a, b)) / RECTS;
 	}
-
 
 	double getResult() const {
 		return result;
@@ -60,7 +55,7 @@ int main(int argc, char* argv[]) {
 
 	cout << "Starting..." << endl;
 	ms = 0;
-	Integration obj(0, PI, function);
+	Integration obj(0, PI, sin);
 	for (int i = 0; i < N; i++) {
 		start_timer();
 

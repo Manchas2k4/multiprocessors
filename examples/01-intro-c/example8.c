@@ -1,7 +1,7 @@
 // =================================================================
 //
 // File: example8.c
-// Author(s): 
+// Author(s):
 // Description: This file contains the code that implements the
 //				enumeration sort algorithm. The time this implementation
 //				takes ill be used as the basis to calculate the
