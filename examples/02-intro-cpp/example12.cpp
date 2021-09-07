@@ -117,12 +117,10 @@ int main(int argc, char* argv[]) {
 	cout << "Starting..." << endl;
 	ms = 0;
 	for (int i = 0; i < N; i++) {
+		
 		start_timer();
-
 		MergeSort obj(a, SIZE);
-
 		obj.doTask();
-
 		ms += stop_timer();
 
 		if (i == (N - 1)) {

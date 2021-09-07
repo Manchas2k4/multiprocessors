@@ -20,6 +20,12 @@ class Sin implements Function {
 	}
 }
 
+class Cos implements Function {
+	public double eval(double x) {
+		return Math.cos(x);
+	}
+}
+
 public class Example3 {
 	private static final int RECTS = 1_000_000_000;
 	private double start, dx, result;

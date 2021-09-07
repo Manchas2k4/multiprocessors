@@ -63,7 +63,6 @@ int main(int argc, char* argv[]) {
 
 		memcpy(aux, a, sizeof(int) * SIZE);
 		BubbleSort obj(aux, SIZE);
-
 		obj.doTask();
 
 		ms += stop_timer();

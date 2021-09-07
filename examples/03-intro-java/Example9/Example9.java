@@ -14,6 +14,9 @@
 // =================================================================
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 public class Example9 {
 	private static final int WIDTH = 1920;
@@ -92,10 +95,20 @@ public class Example9 {
 
 		final BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		bi.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
+
+		/*
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                ImageFrame.showImage("CPU Julia | c(-0.8, 0.156)", bi);
             }
         });
+		*/
+
+		try {
+			ImageIO.write(bi, "png", new File("fractal.png"));
+			System.out.println("Image was written succesfully.");
+		} catch (IOException ioe) {
+			System.out.println("Exception occured :" + ioe.getMessage());
+		}
 	}
 }

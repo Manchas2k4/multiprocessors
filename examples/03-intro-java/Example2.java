@@ -32,9 +32,9 @@ public class Example2 {
 	public void calculate() {
 		result = 0;
 
-		result = Integer.MAX_VALUE;
+		result = Integer.MAX_VALUE; // Float, Double, Long, Character
 		for (int i = 0; i < array.length; i++) {
-			result = (int) Math.min(result, array[i]);
+			result = Math.min(result, array[i]);
 		}
 	}
 

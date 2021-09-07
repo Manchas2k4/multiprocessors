@@ -74,10 +74,10 @@ private:
 		}
 		return 1;
 	}
-	
+
 public:
 	JuliaSet(cv::Mat &image) : img(image) {}
-	
+
 	void doTask() {
 	int value;
 
