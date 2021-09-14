@@ -3,7 +3,7 @@
 // File: Example1.java
 // Author: Pedro Perez
 // Description: This file contains the code that adds all the
-//				elements of an integer array using Java's Threads. 
+//				elements of an integer array using Java's Threads.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -63,6 +63,7 @@ public class Example1 extends Thread {
 			for (int i = 0; i < threads.length; i++) {
 				threads[i].start();
 			}
+			/** -------- */
 			for (int i = 0; i < threads.length; i++) {
 				try {
 					threads[i].join();
