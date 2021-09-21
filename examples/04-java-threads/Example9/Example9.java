@@ -12,6 +12,9 @@
 // =================================================================
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.io.IOException;
 
 public class Example9 extends Thread {
 	private static final int WIDTH = 1920;
@@ -106,6 +109,7 @@ public class Example9 extends Thread {
 
 		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
 
+		/*
 		final BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		bi.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -113,5 +117,14 @@ public class Example9 extends Thread {
                ImageFrame.showImage("CPU Julia | c(-0.8, 0.156)", bi);
             }
         });
+		*/
+		final BufferedImage destination = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		destination.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
+		try {
+			ImageIO.write(destination, "png", new File("fractal.png"));
+			System.out.println("Image was written succesfully.");
+		} catch (IOException ioe) {
+			System.out.println("Exception occured :" + ioe.getMessage());
+		}
 	}
 }
