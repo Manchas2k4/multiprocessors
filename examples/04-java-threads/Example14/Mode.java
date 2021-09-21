@@ -1,5 +1,6 @@
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 public class Mode extends Thread {
     private int array[];
@@ -25,8 +26,13 @@ public class Mode extends Thread {
             }
         }
 
-        for (Iterator<Integer> itr = counters.keySet().iterator(); itr.hasNext(); ) {
-            result = Math.max(counters.get(itr.next()), result);
+        Entry<Integer, Integer> max = null;
+        for (Iterator<Entry<Integer, Integer>> itr = counters.entrySet().iterator(); itr.hasNext(); ) {
+            Entry<Integer, Integer> current = itr.next();
+            if ( (max == null) || (current.getValue() > max.getValue()) ) {
+                max = current;
+            }
         }
+        result = max.getKey();
     }
 }

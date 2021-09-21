@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 public class Example14 {
     private static final int SIZE = 100_000_000;
@@ -36,10 +37,14 @@ public class Example14 {
             }
         }
 
-        mode = 0;
-        for (Iterator<Integer> itr = counters.keySet().iterator(); itr.hasNext(); ) {
-            mode = Math.max(counters.get(itr.next()), mode);
+        Entry<Integer, Integer> max = null;
+        for (Iterator<Entry<Integer, Integer>> itr = counters.entrySet().iterator(); itr.hasNext(); ) {
+            Entry<Integer, Integer> current = itr.next();
+            if ( (max == null) || (current.getValue() > max.getValue()) ) {
+                max = current;
+            }
         }
+        mode = max.getKey();
     }
 
     public void calculateVariance() {
