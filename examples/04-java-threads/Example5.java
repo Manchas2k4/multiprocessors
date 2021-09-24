@@ -2,14 +2,17 @@
 //
 // File: Example5.java
 // Author: Pedro Perez
-// Description: This file implements the bubble sort algorithm using
-//				Java's threads.
+// Description: This file implements the bubble sort algorithm. The
+//				time this implementation takes will be used as the
+//				basis to calculate the improvement obtained with
+//				parallel technologies.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
 // =================================================================
+
 import java.util.Arrays;
 
 public class Example5 extends Thread {
@@ -22,51 +25,50 @@ public class Example5 extends Thread {
 		this.start = start;
 		this. end = end;
 		this.depth = depth;
-		//System.out.println("start = " + start + " end = " + end + " depth = " + depth);
 	}
 
 	private void doSort() {
 		int aux;
 
 		for (int i = end - 1; i > start; i--) {
-		  for (int j = 0; j < i; j++) {
-			if (array[j] > array[j + 1]) {
-			  aux = array[j];
-			  array[j] = array[j + 1];
-			  array[j + 1] = aux;
+			for (int j = 0; j < i; j++) {
+				if (array[j] > array[j + 1]) {
+					aux = array[j];
+					array[j] = array[j + 1];
+					array[j + 1] = aux;
+				}
 			}
-		  }
 		}
 	}
 
 	private void mergeAndCopy() {
-    int i, j, k;
-    int mid = start + ((end - start) / 2);
+		int i, j, k;
+		int mid = start + ((end - start) / 2);
 
-    i = start;
-    j = mid;
-    k = start;
-    while (i < mid && j < end) {
-      if (array[i] < array[j]) {
-        temp[k] = array[i];
-        i++;
-      } else {
-        temp[k] = array[j];
-        j++;
-      }
-      k++;
-    }
-    for (; j < end; j++) {
-      temp[k++] = array[j];
-    }
-    for (; i < mid; i++) {
-      temp[k++] = array[i];
-    }
+		i = start;
+		j = mid;
+		k = start;
+		while (i < mid && j < end) {
+			if (array[i] < array[j]) {
+				temp[k] = array[i];
+				i++;
+			} else {
+				temp[k] = array[j];
+				j++;
+			}
+			k++;
+		}
+		for (; j < end; j++) {
+			temp[k++] = array[j];
+		}
+		for (; i < mid; i++) {
+			temp[k++] = array[i];
+		}
 
-    for (i = start; i < end; i++) {
-      array[i] = temp[i];
-    }
-  }
+		for (i = start; i < end; i++) {
+		array[i] = temp[i];
+		}
+	}
 
 	public void run() {
 		if (depth == 0) {
