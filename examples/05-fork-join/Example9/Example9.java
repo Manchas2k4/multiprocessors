@@ -12,11 +12,14 @@
 // =================================================================
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ForkJoinPool;
 
 public class Example9 extends RecursiveAction {
-	private static final int MIN = 100_000;
+	private static final int MIN = 10_000;
 	private static final int WIDTH = 1920;
 	private static final int HEIGHT = 1080;
 	private static final float SCALEX = 0.5f;
@@ -103,12 +106,22 @@ public class Example9 extends RecursiveAction {
 
 		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
 
-		final BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		bi.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
+		final BufferedImage destination = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		destination.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
+
+		/*
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                ImageFrame.showImage("CPU Julia | c(-0.8, 0.156)", bi);
             }
         });
+		*/
+
+		try {
+			ImageIO.write(destination, "png", new File("fractal.png"));
+			System.out.println("Image was written succesfully.");
+		} catch (IOException ioe) {
+			System.out.println("Exception occured :" + ioe.getMessage());
+		}
 	}
 }

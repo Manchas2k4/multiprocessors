@@ -2,7 +2,7 @@
 //
 // File: Example12.java
 // Author: Pedro Perez
-// Description: This file implements the merge sort algorithm using 
+// Description: This file implements the merge sort algorithm using
 //				Java's Fork-Join.
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
