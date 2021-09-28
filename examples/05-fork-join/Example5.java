@@ -79,7 +79,7 @@ public class Example5 extends RecursiveAction {
 		} else {
 			int mid = start + ((end - start) / 2);
 			invokeAll(new Example5(array, temp, start, mid),
-			new Example5(array, temp, mid, end));
+					  new Example5(array, temp, mid, end));
 			mergeAndCopy();
 		}
 	}

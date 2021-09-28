@@ -16,7 +16,7 @@ import java.util.concurrent.ForkJoinPool;
 
 public class Example2 extends RecursiveTask<Integer> {
 	private static final int SIZE = 100_000_000;
-	private static final int MIN = 100_000;
+	private static final int MIN = 10_000;
 	private int array[], start, end;
 
 	public Example2(int array[], int start, int end) {

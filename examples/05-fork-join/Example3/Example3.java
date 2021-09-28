@@ -22,7 +22,7 @@ class Sin implements Function {
 
 public class Example3 extends RecursiveTask<Double> {
 	private static final int RECTS = 1_000_000_000;
-	private static final int MIN = 1_000_000;
+	private static final int MIN = 100_000;
 	private double x, dx, result;
 	private int start, end;
 	private Function fn;
