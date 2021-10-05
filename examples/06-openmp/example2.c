@@ -27,12 +27,12 @@ int min_value(int *array, int size) {
 		int local_min = result;
 		#pragma omp for nowait
 		for (i = 0; i < size; i++) {
-			local_min = MIN(local_min, array[i]);
+			local_min = MMIN(local_min, array[i]);
 		}
 
 		#pragma omp critical
 		{
-			result = MIN(result, local_min);
+			result = MMIN(result, local_min);
 		}
 	}
 	return result;
