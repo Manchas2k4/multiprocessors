@@ -16,7 +16,7 @@
 #include <string.h>
 #include "utils.h"
 
-#define SIZE 100000000 //1e8
+#define SIZE 10000000 //1e7
 #define GRAIN 1000 // 1e2
 
 void swap(int *a, int i, int j) {
@@ -59,13 +59,13 @@ void split(int *A, int *B, int low, int high) {
 
 	size = high - low + 1;
 	if(size < GRAIN) {
-    for(i = low + 1; i <= high; i++){
+		for(i = low + 1; i <= high; i++){
 			for(j = i; j > low && A[j] < A[j - 1]; j--){
 				swap(A, j, j - 1);
 			}
 		}
 		return;
-  }
+	}
 
 	mid = low + ((high - low) / 2);
 	#pragma omp parallel

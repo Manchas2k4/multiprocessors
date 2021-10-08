@@ -29,8 +29,8 @@ double integration(double a, double b, double (*fn) (double)) {
 	int i;
 	double high, dx, acum, x;
 
-	x = MIN(a, b);
-	dx = (MAX(a, b) - MIN(a, b)) / RECTS;
+	x = MMIN(a, b);
+	dx = (MMAX(a, b) - MMIN(a, b)) / RECTS;
 	acum = 0;
 	#pragma omp parallel for shared(x, dx) reduction(+:acum)
 	for (i = 0; i < RECTS; i++) {

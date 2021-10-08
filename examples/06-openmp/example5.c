@@ -25,32 +25,32 @@ void swap(int *A, int i, int j) {
 }
 
 void oddEvenSort(int *arr, int size) {
-	int step, i, temp;
+    int step, i, temp;
 
-  #pragma omp parallel shared(arr, size) private(i, temp, step)
-	for (step = 0; step < size; step++) {
-    if (step % 2 == 0) {
-      // even index
-      #pragma omp for
-  		for(i = 0; i <= size - 2; i += 2) {
-  			if (arr[i] > arr[i + 1]) {
-  				temp = arr[i];
-          arr[i] = arr[i + 1];
-          arr[i + 1] = temp;
-  			}
-  		}
-    } else {
-  		// odd index
-      #pragma omp for
-  		for(i = 1; i <= size - 2; i += 2) {
-  			if (arr[i] > arr[i + 1]) {
-          temp = arr[i];
-          arr[i] = arr[i + 1];
-          arr[i + 1] = temp;
-  			}
-  		}
+    #pragma omp parallel shared(arr, size) private(i, temp, step)
+    for (step = 0; step < size; step++) {
+        if (step % 2 == 0) {
+            // even index
+            #pragma omp for
+            for(i = 0; i <= size - 2; i += 2) {
+                if (arr[i] > arr[i + 1]) {
+                    temp = arr[i];
+                    arr[i] = arr[i + 1];
+                    arr[i + 1] = temp;
+                }
+            }
+        } else {
+            // odd index
+            #pragma omp for
+            for(i = 1; i <= size - 2; i += 2) {
+                if (arr[i] > arr[i + 1]) {
+                    temp = arr[i];
+                    arr[i] = arr[i + 1];
+                    arr[i + 1] = temp;
+                }
+            }
+        }
     }
-	}
 }
 
 int main(int argc, char* argv[]) {

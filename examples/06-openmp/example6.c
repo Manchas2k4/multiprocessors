@@ -22,9 +22,10 @@
 void matrix_vector(int *m, int *b, int *c) {
 	int i, j, acum;
 
+	#pragma omp parallel for shared(m, b, c) private(j, acum)
 	for (i = 0; i < RENS; i++) {
 		acum = 0;
-		#pragma omp parallel for shared(m, b, i) reduction(+:acum)
+		//#pragma omp parallel for shared(m, b, i) reduction(+:acum)
 		for (j = 0; j < COLS; j++) {
 			acum += (m[(i * COLS) + j] * b[i]);
 		}

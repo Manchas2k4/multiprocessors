@@ -16,7 +16,7 @@
 #include <string.h>
 #include "utils.h"
 
-#define SIZE 100000000 //1e8
+#define SIZE 10000000 //1e7
 
 void swap(int *a, int i, int j) {
 	int aux = a[i];
@@ -77,15 +77,6 @@ void quick(int *A, int low, int high) {
 }
 
 void quick_sort(int *A, int size) {
-	/*
-	#pragma omp parallel shared(A, size)
-	{
-		#pragma omp single nowait
-		{
-			quick(A, 0, size - 1);
-		}
-	}
-	*/
 	quick(A, 0, size - 1);
 }
 
