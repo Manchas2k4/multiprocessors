@@ -20,7 +20,6 @@
 #include "utils.h"
 
 const int SIZE = 100000000; //1e8
-const int GRAIN = 1000; // 1e3
 
 using namespace std;
 using namespace tbb;

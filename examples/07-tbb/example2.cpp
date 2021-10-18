@@ -31,7 +31,6 @@ private:
 public:
 	MinValue(int *a) : array(a), result(INT_MAX) {}
 
-
 	MinValue(MinValue &x, split) : array(x.array), result(INT_MAX) {}
 
 	int getResult() const {

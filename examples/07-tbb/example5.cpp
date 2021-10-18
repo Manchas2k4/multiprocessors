@@ -24,7 +24,7 @@
 using namespace std;
 using namespace tbb;
 
-class OddEvenSort {
+class BubbleSort {
 private:
     int *arr, *temp, start, end, depth;
 
@@ -73,7 +73,7 @@ private:
 	}
 
 public:
-  OddEvenSort(int *a, int *t, int s, int e, int d)
+  BubbleSort(int *a, int *t, int s, int e, int d)
     : arr(a), temp(t), start(s), end(e), depth(d) {}
 
 
@@ -81,16 +81,16 @@ public:
 		int  mid, size, i, j;
 
 		if (depth == 0) {
-      doSort();
-    } else {
-      mid = start + ((end - start) / 2);
-      parallel_invoke (
-        [=] { OddEvenSort obj(arr, temp, start, mid, depth - 1); obj.doTask();},
-        [=] { OddEvenSort obj(arr, temp, mid, end, depth - 1); obj.doTask();}
-      );
-      merge(start, mid, end);
-      //copyArray(low, high);
-    }
+          doSort();
+        } else {
+          mid = start + ((end - start) / 2);
+          parallel_invoke (
+            [=] { BubbleSort obj(arr, temp, start, mid, depth - 1); obj.doTask();},
+            [=] { BubbleSort obj(arr, temp, mid, end, depth - 1); obj.doTask();}
+          );
+          merge(start, mid, end);
+          //copyArray(low, high);
+        }
 	}
 };
 
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
 	random_array(a, SIZE);
 	display_array("before", a);
 
-  depth = (int)(log(MAXTHREADS) / log(2));
+    depth = (int)(log(MAXTHREADS) / log(2));
 
 	printf("Starting...\n");
 	ms = 0;
@@ -111,8 +111,8 @@ int main(int argc, char* argv[]) {
 		start_timer();
 
 		//memcpy(aux, a, sizeof(int) * SIZE);
-		OddEvenSort obj(a, aux, 0, SIZE, depth);
-    obj.doTask();
+		BubbleSort obj(a, aux, 0, SIZE, depth);
+        obj.doTask();
 
 		ms += stop_timer();
 

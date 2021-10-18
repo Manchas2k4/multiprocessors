@@ -79,7 +79,7 @@ private:
 		mid = low + ((high - low) / 2);
 		parallel_invoke (
 			[=] { split(low, mid); },
-			[=] { split(mid +1, high); }
+			[=] { split(mid + 1, high); }
 		);
 		merge(low, mid, high);
 		copyArray(low, high);

@@ -66,6 +66,10 @@ int main(int argc, char* argv[]) {
 		start_timer();
 
 		parallel_for(blocked_range<int>(0, RENS),  MatrixVector(m, b, c));
+		/*
+		MatrixVector obj(m, b, c);
+		parallel_for(blocked_range<int>(0, RENS),  obj);
+		*/
 
 		ms += stop_timer();
 	}
