@@ -3,8 +3,9 @@
 // File: example10.cpp
 // Author(s):
 // Description: This file implements the code that transforms a
-//				grayscale image using Intel's TBB. Uses OpenCV, to compile:
-//			  g++ example10.cpp `pkg-config --cflags --libs opencv4` -ltbb
+//				grayscale image using Intel's TBB. Uses OpenCV,
+//				to compile:
+//	g++ example11.cpp `pkg-config --cflags --libs opencv4` -ltbb
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial

@@ -3,7 +3,8 @@
 // File: example6.cpp
 // Author: Pedro Perez
 // Description: This file implements the multiplication of a matrix
-//				by a vector using Intel's TBB.
+//				by a vector using Intel's TBB. To compile:
+//				g++ example6.cpp -ltbb
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial

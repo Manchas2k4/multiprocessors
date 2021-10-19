@@ -5,11 +5,7 @@
 // Description: This file implements the code  will generate a
 //				fractal image using Intel's TBB. Uses OpenCV, to
 //				compile:
-//			  g++ example9.cpp `pkg-config --cflags --libs opencv4` -ltbb
-//
-//				The time this implementation takes will be used as the
-//				basis to calculate the improvement obtained with
-//				parallel technologies.
+//	g++ example9.cpp `pkg-config --cflags --libs opencv4` -ltbb
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial

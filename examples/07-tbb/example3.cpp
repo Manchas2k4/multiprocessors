@@ -4,7 +4,8 @@
 // Author: Pedro Perez
 // Description: This file contains the code to perform the numerical
 //				integration of a function within a defined interval
-//				using Intel's TBB.
+//				using Intel's TBB. To compile:
+//				g++ example3.cpp -ltbb
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial

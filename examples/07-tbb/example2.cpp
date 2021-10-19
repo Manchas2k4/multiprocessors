@@ -4,6 +4,7 @@
 // Author: Pedro Perez
 // Description: This file contains the code that searches for the
 // 				smallest value stored in an array using Intel's TBB.
+//				To compile: g++ example2.cpp -ltbb
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
