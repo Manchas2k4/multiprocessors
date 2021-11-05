@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example2.cpp
+// File: example2.cpp
 // Author: Pedro Perez
 // Description: This file contains the code that searches for the
 // 				smallest value stored in an array using Intel's TBB.

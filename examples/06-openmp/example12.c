@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example12.c
+// File: example12.c
 // Author: Pedro Perez
 // Description: This file implements the merge sort algorithm usign
 //				OpenMP.

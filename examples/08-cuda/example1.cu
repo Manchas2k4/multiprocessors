@@ -1,10 +1,24 @@
+// =================================================================
+//
+// File: example1.cu
+// Author: Pedro Perez
+// Description: This file contains the code that adds all the
+//				elements of an integer array using CUDA.
+//
+// Copyright (c) 2020 by Tecnologico de Monterrey.
+// All Rights Reserved. May be reproduced for any non-commercial
+// purpose.
+//
+// =================================================================
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <cuda_runtime.h>
 #include "utils.h"
 
-#define SIZE	1e6
+#define SIZE 1000000000 //1e9
 #define THREADS	256
-#define BLOCKS	MIN(32, (SIZE + THREADS - 1)/ THREADS)
+#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
 
 __global__ void sum(int *array, long *result) {
 	__shared__ long cache[THREADS];

@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example12.cpp
+// File: example5.cpp
 // Author: Pedro Perez
 // Description: This file implements the bubble sort algorithm using
 //				Intel's TBB. To compile: g++ example5.cpp -ltbb

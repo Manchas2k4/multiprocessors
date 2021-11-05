@@ -1,3 +1,15 @@
+// =================================================================
+//
+// File: intro3.cu
+// Author: Pedro Perez
+// Description: This file shows some of the basic CUDA directives.
+//
+// Copyright (c) 2020 by Tecnologico de Monterrey.
+// All Rights Reserved. May be reproduced for any non-commercial
+// purpose.
+//
+// =================================================================
+
 #include <stdio.h>
 #include <cuda_runtime.h>
 

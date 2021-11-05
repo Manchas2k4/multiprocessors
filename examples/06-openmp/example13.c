@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example13.c
+// File: example13.c
 // Author: Pedro Perez
 // Description: This file implements the quick sort algorithm using
 //				OpenMP.

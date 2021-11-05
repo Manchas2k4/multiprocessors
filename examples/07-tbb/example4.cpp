@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example3.cpp
+// File: example4.cpp
 // Authors:
 // Description: This file contains the code to count the number of
 //				even numbers within an array using Intel's TBB.

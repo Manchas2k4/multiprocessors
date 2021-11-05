@@ -1,5 +1,18 @@
+// =================================================================
+//
+// File: intro5.cu
+// Author: Pedro Perez
+// Description: This file shows some of the basic CUDA directives.
+//
+// Copyright (c) 2020 by Tecnologico de Monterrey.
+// All Rights Reserved. May be reproduced for any non-commercial
+// purpose.
+//
+// =================================================================
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <cuda_runtime.h>
 #include "utils.h"
 
 #define SIZE 512
@@ -29,7 +42,7 @@ int main(int argc, char* argv[]) {
 	cudaMemcpy(d_a, a, SIZE * sizeof(int), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_b, b, SIZE * sizeof(int), cudaMemcpyHostToDevice);
 
-	add<<<1, SIZE,>>>(d_a, d_b, d_c);
+	add<<<1, SIZE>>>(d_a, d_b, d_c);
 
 	cudaMemcpy(c, d_c, SIZE * sizeof(int), cudaMemcpyDeviceToHost);
 	display_array("c", c);

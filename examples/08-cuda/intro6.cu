@@ -1,9 +1,23 @@
+// =================================================================
+//
+// File: intro6.cu
+// Author: Pedro Perez
+// Description: This file shows some of the basic CUDA directives.
+//
+// Copyright (c) 2020 by Tecnologico de Monterrey.
+// All Rights Reserved. May be reproduced for any non-commercial
+// purpose.
+//
+// =================================================================
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <cuda_runtime.h>
 #include "utils.h"
 
-#define SIZE 	1e6
-#define THREADS 128
+#define SIZE 	1000000 //1e6
+#define THREADS 256
+#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
 
 __global__ void add(int *a, int *b, int *c) {
 	int i = threadIdx.x + (blockIdx.x * blockDim.x);
@@ -33,7 +47,7 @@ int main(int argc, char* argv[]) {
 	cudaMemcpy(d_a, a, SIZE * sizeof(int), cudaMemcpyHostToDevice);
 	cudaMemcpy(d_b, b, SIZE * sizeof(int), cudaMemcpyHostToDevice);
 
-	add<<<SIZE/THREADS, THREADS>>>(d_a, d_b, d_c);
+	add<<<BLOCKS, THREADS>>>(d_a, d_b, d_c);
 
 	cudaMemcpy(c, d_c, SIZE * sizeof(int), cudaMemcpyDeviceToHost);
 	display_array("c", c);
