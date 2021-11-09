@@ -18,7 +18,7 @@
 
 #define SIZE 1000000000 //1e9
 #define THREADS	256
-#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
+#define BLOCKS	MMIN(32, ((SIZE / THREADS) + 1))
 
 __global__ void sum(int *array, long *result) {
 	__shared__ long cache[THREADS];

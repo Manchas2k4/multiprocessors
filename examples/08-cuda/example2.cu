@@ -19,7 +19,7 @@
 
 #define SIZE 1000000000 //1e9
 #define THREADS	256
-#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
+#define BLOCKS	MMIN(32, ((SIZE / THREADS) + 1))
 
 __device__ int minimum(int a, int b) {
 	if (a < b) {

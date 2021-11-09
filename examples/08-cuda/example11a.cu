@@ -1,14 +1,10 @@
 // =================================================================
 //
-// File: example11.cpp
+// File: example11.cu
 // Author(s):
 // Description: This file implements the code that transforms a
-//				grayscale image. Uses OpenCV, to compile:
-//				g++ example11.cpp `pkg-config --cflags --libs opencv4`
-//
-//				The time this implementation takes will be used as the
-//				basis to calculate the improvement obtained with
-//				parallel technologies.
+//				grayscale image. Using OpenCV and OpenMP, to compile:
+//				nvcc example11.cu `pkg-config --cflags --libs opencv4`
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -24,7 +20,11 @@
 #include <opencv2/highgui/highgui_c.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <cuda_runtime.h>
 #include "utils.h"
+
+#define THREADS 256
+#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
 
 // implement your code
 
@@ -57,15 +57,11 @@ int main(int argc, char* argv[]) {
 
 	/*
 	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
-	cv::imshow("Original", src);
+    cv::imshow("Original", src);
 
-	cv::namedWindow("Gray scale", cv::WINDOW_AUTOSIZE);
-	cv::imshow("Gray scale", dest);
+	cv::namedWindow("Gray", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Gray", dest);
 
 	cv::waitKey(0);
 	*/
-
 	cv::imwrite("gray_scale.png", dest);
-
-	return 0;
-}

@@ -28,6 +28,7 @@
 #define DISPLAY		100
 #define TOP_VALUE	10000
 
+typedef unsigned char uchar;
 typedef enum color {BLUE, GREEN, RED} Color;
 
 struct timeval startTime, stopTime;

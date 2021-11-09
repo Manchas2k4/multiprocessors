@@ -19,4 +19,4 @@
 
 #define MAXIMUM 1000000 //1e6
 #define THREADS 256
-#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
+#define BLOCKS	MMIN(32, ((SIZE / THREADS) + 1))

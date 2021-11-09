@@ -20,18 +20,19 @@
 #define RENS    30000
 #define COLS    30000
 #define THREADS 256
-#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
+#define BLOCKS	MMIN(32, (((REN * COLS) / THREADS) + 1))
 
 __global__ void matrix_vector(int *m, int *b, int *c) {
 	int tid = threadIdx.x + (blockIdx.x * blockDim.x);
   int j, sum = 0;
 
-  if (tid < RENS){
+  while (tid < RENS){
     sum = 0;
     for(j = 0; j < COLS; j++) {
           sum += (m[(tid * COLS) + j] * b[tid]);
     }
     c[tid] = sum;
+		tid += blockDim.x * gridDim.x;
   }
 }
 

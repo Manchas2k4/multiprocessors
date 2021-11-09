@@ -17,14 +17,11 @@
 #include <cuda_runtime.h>
 #include "utils.h"
 
-#define SIZE 1000000000 //1e9
+#define START 0
+#define END 3.14159265
+#define RECTS 1000000000 //1e9
 #define THREADS	256
-#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
-
-#define PI		3.14159265
-#define RECTS 1000000 //1e6
-#define START 0.0
-#define END 	PI
+#define BLOCKS	MMIN(32, ((RECTS / THREADS) + 1))
 
 __global__ void integration(double *x, double *dx, double *results) {
 	__shared__ double cache[THREADS];
@@ -33,7 +30,7 @@ __global__ void integration(double *x, double *dx, double *results) {
 	int cacheIndex = threadIdx.x;
 
 	double acum = 0;
-	while (tid < SIZE) {
+	while (tid < RECTS) {
     acum += sin( (*x) + (tid * (*dx)) );
 		tid += blockDim.x * gridDim.x;
 	}

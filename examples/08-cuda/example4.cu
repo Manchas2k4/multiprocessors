@@ -14,7 +14,7 @@
 
 #define SIZE 1000000000
 #define THREADS	256
-#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
+#define BLOCKS	MMIN(32, ((SIZE / THREADS) + 1))
 
 
 // implement your code

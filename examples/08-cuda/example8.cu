@@ -19,4 +19,4 @@
 
 #define SIZE 10000
 #define THREADS 256
-#define BLOCKS	MMAX(32, ((SIZE / THREADS) + 1))
+#define BLOCKS	MMIN(32, ((SIZE / THREADS) + 1))
