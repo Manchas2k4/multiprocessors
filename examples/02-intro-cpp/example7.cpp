@@ -21,22 +21,15 @@
 #include <algorithm>
 #include "utils.h"
 
-#define MAXIMUM 1000000 //1e6
+#define MAXIMUM 5000000 //5e6
 
 using namespace std;
 
 // implement your class here
 
 int main(int argc, char* argv[]) {
-	int i, *a;
+	int i;
 	double ms;
-
-	a = new int[MAXIMUM + 1];
-	cout << "At first, neither is a prime. We will display to TOP_VALUE:\n";
-	for (i = 2; i < TOP_VALUE; i++) {
-		cout << i << " ";
-	}
-	cout << "\n";
 
 	cout << "Starting..." << endl;
 	ms = 0;
@@ -48,12 +41,7 @@ int main(int argc, char* argv[]) {
 
 		ms += stop_timer();
 	}
-	cout << "Expanding the numbers that are prime to TOP_VALUE:\n";
-	for (i = 2; i < TOP_VALUE; i++) {
-		if (a[i] == 1) {
-			printf("%i ", i);
-		}
-	}
+	cout << "result = " << setprecision(2) << "???";
 	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
 
 	delete [] a;
