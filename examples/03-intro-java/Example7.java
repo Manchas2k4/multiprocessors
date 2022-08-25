@@ -15,10 +15,10 @@
 // =================================================================
 
 public class Example7 {
-	private static final int SIZE = 1_000_000;
+	private static final int SIZE = 1_000_001;
 	private boolean array[];
 
-	public Example7(boolean array[]) {
+	public Example7() {
 		this.array = array;
 	}
 
@@ -29,19 +29,13 @@ public class Example7 {
 	}
 
 	public static void main(String args[]) {
-		boolean array[] = new boolean[SIZE + 1];
 		long startTime, stopTime;
-		double acum = 0;
+		double result, ms;
+		Example7 obj;
 
-		System.out.println("At first, neither is a prime. We will display to TOP_VALUE:");
-		for (int i = 2; i < Utils.TOP_VALUE; i++) {
-			array[i] = false;
-			System.out.print("" + i + ", ");
-		}
-		System.out.println("");
-
-		// Create the object here.
-		acum = 0;
+		ms = 0;
+		result = 0;
+		obj = new Example7();
 		System.out.printf("Starting...\n");
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
@@ -50,15 +44,9 @@ public class Example7 {
 
 			stopTime = System.currentTimeMillis();
 
-			acum += (stopTime - startTime);
+			ms += (stopTime - startTime);
 		}
-		System.out.println("Expanding the numbers that are prime to TOP_VALUE:");
-		for (int i = 2; i < Utils.TOP_VALUE; i++) {
-			if (array[i]) {
-				System.out.print("" + i + ", ");
-			}
-		}
-		System.out.println("");
-		System.out.printf("avg time = %.5f ms\n", (acum / Utils.N));
+		System.out.printf("sum = %.0f\n", result);
+		System.out.printf("avg time = %.5f ms\n", (ms / Utils.N));
 	}
 }

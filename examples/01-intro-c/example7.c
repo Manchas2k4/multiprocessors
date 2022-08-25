@@ -18,13 +18,13 @@
 #include <stdlib.h>
 #include "utils.h"
 
-#define MAXIMUM 5000000 //5e6
+#define MAXIMUM 1000001 //1e6
 
 // implement your code
 
 int main(int argc, char* argv[]) {
-	int i, *a;
-	double ms;
+	int i;
+	double ms, result;
 
 	printf("Starting...\n");
 	ms = 0;
@@ -38,6 +38,5 @@ int main(int argc, char* argv[]) {
 	printf("result = %i\n", result);
 	printf("avg time = %.5lf ms\n", (ms / N));
 
-	free(a);
 	return 0;
 }
