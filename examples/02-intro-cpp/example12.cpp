@@ -18,7 +18,7 @@
 #include <cstring>
 #include "utils.h"
 
-const int SIZE = 100000000; //1e8
+const int SIZE = 10000000; //1e7
 const int GRAIN = 1000; // 1e3
 
 using namespace std;

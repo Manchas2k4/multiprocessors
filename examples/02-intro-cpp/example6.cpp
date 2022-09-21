@@ -18,8 +18,8 @@
 #include <climits>
 #include "utils.h"
 
-const int RENS = 30000; //1e5
-const int COLS = 30000;
+const int RENS = 10000; //1e5
+const int COLS = 10000;
 
 using namespace std;
 

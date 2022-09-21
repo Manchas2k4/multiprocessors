@@ -19,7 +19,7 @@
 
 #define START 0
 #define END 3.14159265
-#define RECTS 1000000000 //1e9
+#define RECTS 100000000 //1e8
 #define THREADS	256
 #define BLOCKS	MMIN(32, ((RECTS / THREADS) + 1))
 

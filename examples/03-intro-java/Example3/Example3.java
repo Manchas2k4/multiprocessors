@@ -27,7 +27,7 @@ class Cos implements Function {
 }
 
 public class Example3 {
-	private static final int RECTS = 1_000_000_000;
+	private static final int RECTS = 100_000_000;
 	private double start, dx, result;
 	private Function fn;
 

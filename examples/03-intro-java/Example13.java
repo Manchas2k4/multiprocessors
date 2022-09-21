@@ -16,7 +16,7 @@
 import java.util.Arrays;
 
 public class Example13 {
-	private static final int SIZE = 100_000_000;
+	private static final int SIZE = 10_000_000;
 	private int A[];
 
 	public Example13(int A[]) {

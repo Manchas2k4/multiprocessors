@@ -14,8 +14,8 @@ import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ForkJoinPool;
 
 public class Example6 extends RecursiveAction {
-	private static final int RENS = 20_000;
-	private static final int COLS = 20_000;
+	private static final int RENS = 10_000;
+	private static final int COLS = 10_000;
 	private static final int MIN = 5_000;
 	private int m[], b[], c[], start, end;
 

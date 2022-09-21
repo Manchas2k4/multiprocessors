@@ -1,6 +1,6 @@
-// =================================================================
+}// =================================================================
 //
-// File: example2.cpp
+// File: example3.cpp
 // Author: Pedro Perez
 // Description: This file contains the code to perform the numerical
 //				integration of a function within a defined interval.
@@ -21,7 +21,7 @@
 #include "utils.h"
 
 const double PI = 3.14159265;
-const int RECTS = 1000000000; //1e9
+const int RECTS = 100000000; //1e8
 
 using namespace std;
 

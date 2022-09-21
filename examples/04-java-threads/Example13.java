@@ -14,7 +14,7 @@
 import java.util.Arrays;
 
 public class Example13 extends Thread {
-	private static final int SIZE = 100_000_000;
+	private static final int SIZE = 10_000_000;
 	private int A[], start, end, numberOfThread;
 
 	public Example13(int A[], int start, int end, int numberOfThread) {

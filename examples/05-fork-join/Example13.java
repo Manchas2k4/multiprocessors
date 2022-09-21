@@ -16,7 +16,7 @@ import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ForkJoinPool;
 
 public class Example13 extends RecursiveAction {
-	private static final int SIZE = 100_000_000;
+	private static final int SIZE = 10_000_000;
 	private int A[], start, end;
 
 	public Example13(int A[], int start, int end) {

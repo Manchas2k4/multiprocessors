@@ -93,7 +93,8 @@ public class Example9 {
 
 		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
 
-		final BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		final BufferedImage bi = 
+			new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		bi.setRGB(0, 0, WIDTH, HEIGHT, array, 0, WIDTH);
 
 		/*

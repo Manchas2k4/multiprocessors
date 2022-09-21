@@ -64,9 +64,11 @@ public class Example1 extends Thread {
 				threads[i].start();
 			}
 			/** -------- */
+			result = 0;
 			for (int i = 0; i < threads.length; i++) {
 				try {
 					threads[i].join();
+					result = threads[i].getResult();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -74,12 +76,6 @@ public class Example1 extends Thread {
 			stopTime = System.currentTimeMillis();
 			ms +=  (stopTime - startTime);
 
-			if (j == Utils.N) {
-				result = 0;
-				for (int i = 0; i < threads.length; i++) {
-					result += threads[i].getResult();
-				}
-			}
 		}
 		System.out.printf("sum = %d\n", result);
 		System.out.printf("avg time = %.5f ms\n", (ms / Utils.N));

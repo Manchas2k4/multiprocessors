@@ -17,8 +17,8 @@
 #include <cuda_runtime.h>
 #include "utils.h"
 
-#define RENS    30000
-#define COLS    30000
+#define RENS    10000
+#define COLS    10000
 #define THREADS 256
 #define BLOCKS	MMIN(32, (((REN * COLS) / THREADS) + 1))
 

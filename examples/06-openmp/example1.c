@@ -16,7 +16,7 @@
 #include <omp.h>
 #include "utils.h"
 
-#define SIZE 1000000000 //1e9
+#define SIZE 100000000 //1e8
 
 double sum_array(int *array, int size) {
 	double acum;

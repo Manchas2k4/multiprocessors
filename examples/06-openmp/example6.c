@@ -16,8 +16,8 @@
 #include <limits.h>
 #include "utils.h"
 
-#define RENS 30000
-#define COLS 30000
+#define RENS 10000
+#define COLS 10000
 
 void matrix_vector(int *m, int *b, int *c) {
 	int i, j, acum;

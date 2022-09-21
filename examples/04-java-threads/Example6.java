@@ -12,8 +12,8 @@
 // =================================================================
 
 public class Example6 extends Thread {
-	private static final int RENS = 20_000;
-	private static final int COLS = 20_000;
+	private static final int RENS = 10_000;
+	private static final int COLS = 10_000;
 	private int m[], b[], c[], start, end;
 
 	public Example6(int m[], int b[], int c[], int start, int end) {

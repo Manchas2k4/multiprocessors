@@ -18,7 +18,7 @@
 #include <iomanip>
 #include "utils.h"
 
-const int SIZE = 1000000000; //1e9
+const int SIZE = 10000000; //1e7
 
 using namespace std;
 
@@ -61,9 +61,8 @@ int main(int argc, char* argv[]) {
 
 		ms += stop_timer();
 	}
-	cout << "sum = " << (long int) obj.getResult() << endl;
-	//printf("%.15lf")
-	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
+	cout << "sum = " << fixed << setprecision(0) <<  obj.getResult() << endl;
+	cout << "avg time = " << setprecision(5) << (ms / N) << " ms" << endl;
 
 	delete [] a;
 	return 0;

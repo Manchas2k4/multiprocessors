@@ -13,17 +13,16 @@
 
 import java.util.Arrays;
 
-public class Example12 extends Thread {
+public class Example12a extends Thread {
 	private static final int SIZE = 10_000_000;
-	private static final int GRAIN = 1_000;
-	private int A[], B[], start, end, numberOfThread;
+	private static final int GRAIN = 100_000;
+	private int A[], B[], start, end, depth;
 
-	public Example12(int A[], int B[], int start, int end, int numberOfThread) {
+	public Example12a(int A[], int B[], int start, int end) {
 		this.A = A;
 		this.B = B;
 		this.start = start;
 		this.end = end;
-		this.numberOfThread = numberOfThread;
 	}
 
 	private void swap(int a[], int i, int j) {
@@ -62,38 +61,21 @@ public class Example12 extends Thread {
 		}
 	}
 
-	private void sequentialSplit(int low, int high) {
-		int  mid;
-
-		if((high - low + 1) < GRAIN) {
-			Arrays.sort(A, start, end);
-			return;
-		}
-
-		mid = low + ((high - low) / 2);
-		sequentialSplit(low, mid);
-		sequentialSplit(mid + 1, high);
-		merge(low, mid, high);
-		copyArray(low, high);
-	}
-
 	private void parallelSplit() {
-		int  mid, count = numberOfThread;
-		Example12 left, right;
-
-		if((end - start + 1) < GRAIN) {
+		int  mid;
+		Example12a left, right;
+		
+		if((end - start) <= GRAIN) {
 			Arrays.sort(A, start, end);
 			return;
 		}
 
 		mid = start + ((end - start) / 2);
 
-		count++;
-		left = new Example12(A, B, start, mid, count);
+		left = new Example12a(A, B, start, mid);
 		left.start();
 
-		count++;
-		right = new Example12(A, B, mid + 1, end, count);
+		right = new Example12a(A, B, mid + 1, end);
 		right.start();
 
 		try {
@@ -101,16 +83,13 @@ public class Example12 extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		merge(start, mid, end);
-		copyArray(start, end);
+		//merge(start, mid, end);
+		//copyArray(start, end);
+		Arrays.sort(A, start, end);
 	}
 
 	public void run() {
-		if (numberOfThread >= Utils.MAXTHREADS) {
-			sequentialSplit(start, end);
-		} else {
-			parallelSplit();
-		}
+		parallelSplit();
 	}
 
 	public int[] getSortedArray() {
@@ -118,23 +97,25 @@ public class Example12 extends Thread {
 	}
 
 	public static void main(String args[]) {
-		int array[], temp[];
+		int array[], temp[], depth;
 		long startTime, stopTime;
 		double ms;
-		Example12 obj = null;
+		Example12a obj = null;
 
 		array = new int[SIZE];
 		temp = new int[SIZE];
 		Utils.randomArray(array);
 		Utils.displayArray("before", array);
 
+		depth = ((int) (Math.log(Utils.MAXTHREADS) / Math.log(2))) + 1;
+
 		System.out.printf("Starting...\n");
 		ms = 0;
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
-			obj = new Example12(Arrays.copyOf(array, array.length), temp,
-									0, array.length - 1, 1);
+			obj = new Example12a(Arrays.copyOf(array, array.length), 
+						temp, 0, array.length - 1);
 			obj.start();
 
 			try {

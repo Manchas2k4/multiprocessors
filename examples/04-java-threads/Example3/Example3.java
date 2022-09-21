@@ -19,7 +19,7 @@ class Sin implements Function {
 }
 
 public class Example3 extends Thread {
-	private static final int RECTS = 1_000_000_000;
+	private static final int RECTS = 100_000_000;
 	private double x, dx, result;
 	private int start, end;
 	private Function fn;
@@ -58,9 +58,11 @@ public class Example3 extends Thread {
 		for (int j = 1; j <= Utils.N; j++) {
 			for (int i = 0; i < threads.length; i++) {
 				if (i != threads.length - 1) {
-					threads[i] = new Example3(0, Math.PI, new Sin(), (i * block), ((i + 1) * block));
+					threads[i] = 
+new Example3(0, Math.PI, new Sin(), (i * block), ((i + 1) * block));
 				} else {
-					threads[i] = new Example3(0, Math.PI, new Sin(), (i * block), RECTS);
+					threads[i] = 
+new Example3(0, Math.PI, new Sin(), (i * block), RECTS);
 				}
 			}
 
@@ -78,12 +80,10 @@ public class Example3 extends Thread {
 			stopTime = System.currentTimeMillis();
 			ms +=  (stopTime - startTime);
 
-			if (j == Utils.N) {
-				result = 0;
-				for (int i = 0; i < threads.length; i++) {
-					result += threads[i].getResult();
-				}
-			}
+		}
+		result = 0;
+		for (int i = 0; i < threads.length; i++) {
+			result += threads[i].getResult();
 		}
 		System.out.printf("result = %.5f\n", result);
 		System.out.printf("avg time = %.5f\n", (ms / Utils.N));

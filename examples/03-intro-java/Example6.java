@@ -14,8 +14,8 @@
 // =================================================================
 
 public class Example6 {
-	private static final int RENS = 20_000;
-	private static final int COLS = 20_000;
+	private static final int RENS = 10_000;
+	private static final int COLS = 10_000;
 	private int m[], b[], c[];
 
 	public Example6(int m[], int b[], int c[]) {

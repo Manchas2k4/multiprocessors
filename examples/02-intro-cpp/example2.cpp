@@ -20,7 +20,7 @@
 #include <algorithm>
 #include "utils.h"
 
-const int SIZE = 1000000000; //1e9
+const int SIZE = 10000000; //1e7
 
 using namespace std;
 
@@ -38,7 +38,7 @@ public:
 	void calculate() {
 		result = INT_MAX;
 		for (int i = 0; i < size; i++) {
-			result = min(result, array[i]);
+			result = MMIN(result, array[i]);
 		}
 	}
 };

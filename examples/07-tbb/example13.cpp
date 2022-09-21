@@ -20,7 +20,7 @@
 #include <tbb/parallel_invoke.h>
 #include "utils.h"
 
-const int SIZE = 100000000; //1e8
+const int SIZE = 10000000; //1e7
 
 using namespace std;
 using namespace tbb;

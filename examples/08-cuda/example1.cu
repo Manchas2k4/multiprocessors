@@ -16,7 +16,7 @@
 #include <cuda_runtime.h>
 #include "utils.h"
 
-#define SIZE 1000000000 //1e9
+#define SIZE 100000000 //1e8
 #define THREADS	256
 #define BLOCKS	MMIN(32, ((SIZE / THREADS) + 1))
 
