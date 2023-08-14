@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example01.c 
+// File: example02.cpp
 // Author: Pedro Perez
 // Description: This file contains the code that looks for an element 
 //				X within the array and replaces it with Y. The time 

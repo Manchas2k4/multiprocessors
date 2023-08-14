@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example04.cpp
+// File: example06.cpp
 // Author: Pedro Perez
 // Description: This file contains the code to perform the numerical
 //				integration of a function within a defined interval.

@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example03.cpp
+// File: example01.cpp
 // Author: Pedro Perez
 // Description: This file implements the addition of two vectors. 
 //				The time this implementation takes will be used as 

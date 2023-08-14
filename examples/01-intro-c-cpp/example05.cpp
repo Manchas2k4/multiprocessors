@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example03.c
+// File: example05.c
 // Author: Pedro Perez
 // Description: This file contains the code that adds all the
 //				elements of an integer array. The time this

@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example02.cpp
+// File: example03.cpp
 // Author: Pedro Perez
 // Description: This file implements the multiplication of a matrix
 //				by a vector. The time this implementation takes will
