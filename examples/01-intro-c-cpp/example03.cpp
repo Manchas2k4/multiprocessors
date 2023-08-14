@@ -1,22 +1,25 @@
 // =================================================================
 //
-// File: example6.c
+// File: example02.cpp
 // Author: Pedro Perez
 // Description: This file implements the multiplication of a matrix
 //				by a vector. The time this implementation takes will
 //				be used as the basis to calculate the improvement
 //				obtained with parallel technologies.
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.
+// Copyright (c) 2022 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
 // =================================================================
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
+#include <iostream>
+#include <iomanip>
+#include <chrono>
 #include "utils.h"
+
+using namespace std;
+using namespace std::chrono;
 
 #define RENS 10000
 #define COLS 10000
@@ -34,32 +37,41 @@ void matrix_vector(int *m, int *b, int *c) {
 }
 
 int main(int argc, char* argv[]) {
-	int i, j, *m, *b, *c;
-	double ms;
+	int *m, *b, *c;
 
-	m = (int*) malloc(sizeof(int) * RENS * COLS);
-	b = (int*) malloc(sizeof(int) * RENS);
-	c = (int*) malloc(sizeof(int) * RENS);
+	// These variables are used to keep track of the execution time.
+	high_resolution_clock::time_point start, end;
+	double timeElapsed;
 
-	for (i = 0; i < RENS; i++) {
-		for (j = 0; j < COLS; j++) {
+	m = new int[RENS * COLS];
+	b = new int [RENS];
+	c = new int [RENS];
+
+	for (int i = 0; i < RENS; i++) {
+		for (int j = 0; j < COLS; j++) {
 			m[(i * COLS) + j] = (j + 1);
 		}
 		b[i] = 1;
 	}
 
-	printf("Starting...\n");
-	ms = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
+	cout << "Starting...\n";
+	timeElapsed = 0;
+	for (int j = 0; j < N; j++) {
+		start = high_resolution_clock::now();
 
 		matrix_vector(m, b, c);
 
-		ms += stop_timer();
+		end = high_resolution_clock::now();
+		timeElapsed += 
+			duration<double, std::milli>(end - start).count();
 	}
 	display_array("c:", c);
-	printf("avg time = %.5lf ms\n", (ms / N));
+	cout << "avg time = " << fixed << setprecision(3) 
+		 << (timeElapsed / N) <<  " ms\n";
 
-	free(m); free(b); free(c);
+	delete [] m;
+	delete [] b;
+	delete [] c;
+
 	return 0;
 }

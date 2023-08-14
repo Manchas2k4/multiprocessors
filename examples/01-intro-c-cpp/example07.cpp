@@ -1,16 +1,16 @@
 // =================================================================
 //
-// File: example10.cpp
+// File: example07.cpp
 // Author: Pedro Perez
 // Description: This file implements the code that blurs a given
 //				image. Uses OpenCV, to compile:
-//				g++ example10.cpp `pkg-config --cflags --libs opencv4`
+//				g++ example07.cpp `pkg-config --cflags --libs opencv4`
 //
 //				The time this implementation takes will be used as the
 //				basis to calculate the improvement obtained with
 //				parallel technologies.
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.
+// Copyright (c) 2022 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
