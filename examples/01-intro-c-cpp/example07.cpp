@@ -16,8 +16,9 @@
 //
 // =================================================================
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <iomanip>
+#include <chrono>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -27,6 +28,11 @@
 #include "utils.h"
 
 #define BLUR_WINDOW 15
+
+typedef enum color {BLUE, GREEN, RED} Color;
+
+using namespace std;
+using namespace std::chrono;
 
 void blur_pixel(cv::Mat &src, cv::Mat &dest, int ren, int col) {
 	int side_pixels, cells;
@@ -61,31 +67,35 @@ void blur(cv::Mat &src, cv::Mat &dest) {
 }
 
 int main(int argc, char* argv[]) {
-	int i;
-	double acum;
+	// These variables are used to keep track of the execution time.
+	high_resolution_clock::time_point start, end;
+	double timeElapsed;
 
 	if (argc != 2) {
-		printf("usage: %s source_file\n", argv[0]);
+		cout << "usage: " << argv[0] << " source_file\n";
 		return -1;
 	}
 
 	cv::Mat src = cv::imread(argv[1], cv::IMREAD_COLOR);
 	cv::Mat dest = cv::Mat(src.rows, src.cols, CV_8UC3);
 	if (!src.data) {
-		printf("Could not load image file: %s\n", argv[1]);
+		cout << "Could not load image file: " << argv[1] << "\n";
 		return -1;
 	}
 
-	acum = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
+	cout << "Starting...\n";
+	timeElapsed = 0;
+	for (int j = 0; j < N; j++) {
+		start = high_resolution_clock::now();
 
 		blur(src, dest);
 
-		acum += stop_timer();
+		end = high_resolution_clock::now();
+		timeElapsed += 
+			duration<double, std::milli>(end - start).count();
 	}
-
-	printf("avg time = %.5lf ms\n", (acum / N));
+	cout << "avg time = " << fixed << setprecision(3) 
+		 << (timeElapsed / N) <<  " ms\n";
 
 	/*
 	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
