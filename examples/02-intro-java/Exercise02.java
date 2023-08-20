@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example7.java
+// File: Exercise02.java
 // Author(s):
 // Description: This file contains the code to brute-force all
 //				prime numbers less than MAXIMUM. The time this
@@ -14,28 +14,24 @@
 //
 // =================================================================
 
-public class Example7 {
+public class Exercise02 {
 	private static final int SIZE = 1_000_001;
-	private boolean array[];
 
-	public Example7() {
-		this.array = array;
+	public Exercise02() {
 	}
 
-	// place yout code here
-
-	public void calculate() {
+	public double calculate() {
 		// place yout code here
+		return 0.0;
 	}
 
 	public static void main(String args[]) {
 		long startTime, stopTime;
-		double result, ms;
-		Example7 obj;
+		double result = 0, elapsedTime;
+		
+		Exercise02 obj = new Exercise02();
 
-		ms = 0;
-		result = 0;
-		obj = new Example7();
+		elapsedTime = 0;
 		System.out.printf("Starting...\n");
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
@@ -44,9 +40,9 @@ public class Example7 {
 
 			stopTime = System.currentTimeMillis();
 
-			ms += (stopTime - startTime);
+			elapsedTime += (stopTime - startTime);
 		}
-		System.out.printf("sum = %.0f\n", result);
-		System.out.printf("avg time = %.5f ms\n", (ms / Utils.N));
+		System.out.printf("result = %.0f\n", result);
+		System.out.printf("avg time = %.5f ms\n", (elapsedTime / Utils.N));
 	}
 }

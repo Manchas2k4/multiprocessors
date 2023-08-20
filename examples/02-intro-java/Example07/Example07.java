@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example10.java
+// File: Example07.java
 // Author: Pedro Perez
 // Description: This file implements the code that blurs a given
 //				image. The time this implementation takes will be
@@ -18,11 +18,11 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class Example10 {
+public class Example07 {
 	private static final int BLUR_WINDOW = 15;
 	private int src[], dest[], width, height;
 
-	public Example10(int src[], int dest[], int width, int height) {
+	public Example07(int src[], int dest[], int width, int height) {
 		this.src = src;
 		this.dest = dest;
 		this.width = width;
@@ -70,7 +70,7 @@ public class Example10 {
 
 	public static void main(String args[]) throws Exception {
 		long startTime, stopTime;
-		double ms;
+		double elapsedTime;
 
 		if (args.length != 1) {
 			System.out.println("usage: java Example10 image_file");
@@ -86,19 +86,20 @@ public class Example10 {
 		int src[] = source.getRGB(0, 0, w, h, null, 0, w);
 		int dest[] = new int[src.length];
 
+		Example07 obj = new Example07(src, dest, w, h);
+
 		System.out.printf("Starting...\n");
-		ms = 0;
-		Example10 e = new Example10(src, dest, w, h);
+		elapsedTime = 0;
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
-			e.doTask();
+			obj.doTask();
 
 			stopTime = System.currentTimeMillis();
 
-			ms += (stopTime - startTime);
+			elapsedTime += (stopTime - startTime);
 		}
-		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
+		System.out.printf("avg time = %.5f\n", (elapsedTime / Utils.N));
 		final BufferedImage destination = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		destination.setRGB(0, 0, w, h, dest, 0, w);
 

@@ -1,6 +1,6 @@
 // =================================================================
 //	
-// File: Example12.java
+// File: Example08.java
 // Author: Pedro Perez
 // Description: This file implements the merge sort algorithm. The
 //				time this implementation takes will be used as the
@@ -15,12 +15,11 @@
 
 import java.util.Arrays;
 
-public class Example12 {
+public class Example08 {
 	private static final int SIZE = 100_000_000;
-	private static final int GRAIN = 1_000;
 	private int A[], B[];
 
-	public Example12(int A[]) {
+	public Example08(int A[]) {
 		this.A = A;
 		this.B = new int[A.length];
 	}
@@ -64,13 +63,7 @@ public class Example12 {
 	private void split(int low, int high) {
 		int  mid, size, i, j;
 
-		size = high - low + 1;
-		if(size < GRAIN) {
-			for(i = low + 1; i < size; i++){
-				for(j = i; j > low && A[j] < A[j - 1]; j--){
-					swap(A, j, j - 1);
-				}
-			}
+		if ((high - low + 1) == 1) {
 			return;
 		}
 
@@ -85,32 +78,31 @@ public class Example12 {
 		split(0, A.length - 1);
 	}
 
-	public int[] getSortedArray() {
-		return A;
-	}
-
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
+		int aux[] = new int[SIZE];
 		long startTime, stopTime;
-		double ms;
-		Example12 obj = null;
+		double elapsedTime;
+		Example08 obj = null;
 
 		Utils.randomArray(array);
 		Utils.displayArray("before", array);
 
 		System.out.printf("Starting...\n");
-		ms = 0;
+		elapsedTime = 0;
 		for (int i = 0; i < Utils.N; i++) {
+			System.arraycopy(array, 0, aux, 0, array.length);
+
 			startTime = System.currentTimeMillis();
 
-			obj = new Example12(Arrays.copyOf(array, array.length));
+			obj = new Example08(aux);
 			obj.doTask();
 
 			stopTime = System.currentTimeMillis();
 
-			ms += (stopTime - startTime);
+			elapsedTime += (stopTime - startTime);
 		}
-		Utils.displayArray("after", obj.getSortedArray());
-		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
+		Utils.displayArray("after", aux);
+		System.out.printf("avg time = %.5f\n", (elapsedTime / Utils.N));
 	}
 }

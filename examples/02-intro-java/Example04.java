@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example2.java
+// File: Example04.java
 // Author: Pedro Perez
 // Description: This file contains the code that searches for the
 // 				smallest value stored in an array. The time this
@@ -8,61 +8,56 @@
 //				calculate the improvement obtained with parallel
 //				technologies.
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.
+// Copyright (c) 2022 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
 // =================================================================
 
 
-public class Example2 {
-	private static final int SIZE = 100_000_000;
+public class Example04 {
+	private static final int SIZE = 1_000_000_000;
 	private int array[];
-	private int result;
-
-	public Example2(int array[]) {
+	
+	public Example04(int array[]) {
 		this.array = array;
-		this.result = 0;
 	}
 
-	public int getResult() {
-		return result;
-	}
+	public int calculate() {
+		int result = 0;
 
-	public void calculate() {
-		result = 0;
-
-		result = Integer.MAX_VALUE; // Float, Double, Long, Character
-		for (int i = 0; i < array.length; i++) {
-			result = Math.min(result, array[i]);
+		result = array[0]; 
+		for (int i = 1; i < array.length; i++) {
+			if (array[i] < result) {
+				result = array[i];
+			}
 		}
+		return result;
 	}
 
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
+		int result = 0;
 		long startTime, stopTime;
-		double ms;
+		double elapsedTime;
 
 		Utils.randomArray(array);
 		Utils.displayArray("array", array);
 
-		int pos = Math.abs(Utils.r.nextInt()) % SIZE;
-		System.out.printf("Setting value 0 at %d\n", pos);
-		array[pos] = 0;
+		Example04 obj = new Example04(array);
 
-		Example2 e = new Example2(array);
-		ms = 0;
+		elapsedTime = 0;
 		System.out.printf("Starting...\n");
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
-			e.calculate();
+			result = obj.calculate();
 
 			stopTime = System.currentTimeMillis();
 
-			ms += (stopTime - startTime);
+			elapsedTime += (stopTime - startTime);
 		}
-		System.out.printf("result = %d\n", e.getResult());
-		System.out.printf("avg time = %.5f\n ms", (ms / Utils.N));
+		System.out.printf("result = %d\n", result);
+		System.out.printf("avg time = %.5f\n ms", (elapsedTime / Utils.N));
 	}
 }

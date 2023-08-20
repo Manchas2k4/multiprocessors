@@ -3,9 +3,13 @@
 // File: exercise03.cpp
 // Author(s):
 // Description: This file contains the code that implements the
-//				enumeration sort algorithm. The time this implementation
-//				takes ill be used as the basis to calculate the
-//				improvement obtained with parallel technologies.
+//				enumeration sort algorithm. The time this 
+//				implementation takes ill be used as the basis to 
+//				calculate the improvement obtained with parallel 
+//				technologies.
+//
+// Algorithm reference:
+//	https://www.osys.se/Archive/Papers/parallel-sort/node3.html
 //
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial

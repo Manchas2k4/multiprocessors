@@ -15,11 +15,11 @@
 
 import java.util.Arrays;
 
-public class Example8 {
+public class Exercise03 {
 	private static final int SIZE = 100_000;
 	private int array[];
 
-	public Example8(int array[]) {
+	public Exercise03(int array[]) {
 		this.array = array;
 	}
 
@@ -27,31 +27,31 @@ public class Example8 {
 		// place your code here
 	}
 
-	public int[] getSortedArray() {
-		return array;
-	}
-
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
+		int aux[] = new int[SIZE];
 		long startTime, stopTime;
-		double ms;
-		Example8 obj = null;
+		double elapsedTime;
+		
+		Exercise03 obj = null;
 
 		Utils.randomArray(array);
 		Utils.displayArray("before", array);
 
 		System.out.printf("Starting...\n");
-		ms = 0;
+		elapsedTime = 0;
 		for (int i = 0; i < Utils.N; i++) {
+			System.arraycopy(array, 0, aux, 0, array.length);
+
 			startTime = System.currentTimeMillis();
 
 			// pace your code here.
 
 			stopTime = System.currentTimeMillis();
 
-			ms += (stopTime - startTime);
+			elapsedTime += (stopTime - startTime);
 		}
-		Utils.displayArray("after", obj.getSortedArray());
-		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
+		Utils.displayArray("after", aux);
+		System.out.printf("avg time = %.5f\n", (elapsedTime / Utils.N));
 	}
 }

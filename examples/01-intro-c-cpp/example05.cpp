@@ -2,13 +2,15 @@
 //
 // File: example05.c
 // Author: Pedro Perez
-// Description: This file contains the code that adds all the
-//				elements of an integer array. The time this
-//				implementation takes will be used as the basis to
-//				calculate the improvement obtained with parallel
-//				technologies.
+// Description: This file contains the approximation of Pi using the 
+//				Monte-Carlo method.The time this implementation 
+//				takes will be used as the basis to calculate the 
+//				improvement obtained with parallel technologies.
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.
+// Reference:
+//	https://www.geogebra.org/m/cF7RwK3H
+//
+// Copyright (c) 2023 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
@@ -24,7 +26,7 @@
 using namespace std;
 using namespace std::chrono;
 
-#define INTERVAL 		 10000//1e5
+#define INTERVAL 		 10000//1e4
 #define NUMBER_OF_POINTS 100000000 // 1e8
 
 double aprox_pi(int numberOfPoints) {

@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: Example3.java
+// File: Example06.java
 // Author: Pedro Perez
 // Description: This file contains the code to perform the numerical
 //				integration of a function within a defined interval.
@@ -26,46 +26,46 @@ class Cos implements Function {
 	}
 }
 
-public class Example3 {
-	private static final int RECTS = 100_000_000;
-	private double start, dx, result;
+public class Example06 {
+	private static final int RECTS = 1_000_000_000;
+	private double x0, dx, result;
 	private Function fn;
 
-	public Example3(double a, double b, Function fn) {
-		this.start = Math.min(a, b);
-		this.dx = (Math.max(a,b) - Math.min(a, b)) / RECTS;
+	public Example06(double x0, double dx, Function fn) {
+		this.x0 = x0;
+		this.dx = dx;
 		this.fn = fn;
 	}
 
-	public double getResult() {
-		return result;
-	}
-
-	public void calculate() {
-		result = 0;
+	public double calculate() {
+		double result = 0;
 		for (int i = 0; i < RECTS; i++) {
-			result += fn.eval(start + (i * dx));
+			result += fn.eval(x0 + (i * dx));
 		}
 		result = result * dx;
+		return result;
 	}
 
 	public static void main(String args[]) {
 		long startTime, stopTime;
-		double ms;
+		double elapsedTime, x0, dx, result = 0;
+
+		x0 = 0;
+		dx = Math.PI / RECTS;
+		Example06 obj = new Example06(x0, dx, new Sin());
 
 		System.out.printf("Starting...\n");
-		ms = 0;
-		Example3 e = new Example3(0, Math.PI, new Sin());
+		elapsedTime = 0;
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
-			e.calculate();
+			result = obj.calculate();
 
 			stopTime = System.currentTimeMillis();
 
-			ms += (stopTime - startTime);
+			elapsedTime += (stopTime - startTime);
 		}
-		System.out.printf("result = %.5f\n", e.getResult());
-		System.out.printf("avg time = %.5f ms\n", (ms / Utils.N));
+		System.out.printf("result = %.5f\n", result);
+		System.out.printf("avg time = %.5f ms\n", (elapsedTime / Utils.N));
 	}
 }
