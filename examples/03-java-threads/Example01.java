@@ -2,29 +2,29 @@
 //
 // File: Example01.java
 // Author: Pedro Perez
-// Description: This file implements the addition of two vectors. 
-//				The time this implementation takes will be used as 
-//				the basis to calculate the improvement obtained with 
-//				parallel technologies.
+// Description: This file implements the addition of two vectors 
+//				using Java's Threads.
 //
-// Copyright (c) 2022 by Tecnologico de Monterrey.
+// Copyright (c) 2023 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
 // =================================================================
 
-public class Example01 {
+public class Example01 extends Thread {
 	private static final int SIZE = 100_000_000;
-	private int a[], b[], c[];
+	private int a[], b[], c[], start, end;
 
-	public Example01(int c[], int a[], int b[]) {
+	public Example01(int start, int end, int c[], int a[], int b[]) {
+		this.start = start;
+		this.end = end;
 		this.a = a;
 		this.b = b;
 		this.c = c;
 	}
 
-	public void doTask() {
-		for (int i = 0; i < c.length; i++) {
+	public void run() {
+		for (int i = start; i < end; i++) {
 			c[i] = a[i] + b[i];
 		}
 	}
@@ -35,20 +35,42 @@ public class Example01 {
 		int c[] = new int [SIZE];
 		long startTime, stopTime;
 		double elapsedTime = 0;
+		int blockSize;
+		Example01 threads[];
 
 		Utils.fillArray(a);
 		Utils.displayArray("a", a);
 		Utils.fillArray(b);
 		Utils.displayArray("b", b);
 
-		Example01 obj = new Example01(c, a, b);
+		blockSize = SIZE / Utils.MAXTHREADS;
+		threads = new Example01[Utils.MAXTHREADS];
+
 		elapsedTime = 0;
 		System.out.printf("Starting...\n");
 		for (int j = 0; j < Utils.N; j++) {
 			startTime = System.currentTimeMillis();
 
-			obj.doTask();
+			for (int i = 0; i < threads.length; i++) {
+				if (i != threads.length - 1) {
+					threads[i] = 
+					new Example01((i * blockSize), ((i + 1) * blockSize), c, a, b);
+				} else {
+					threads[i] = new Example01((i * blockSize), SIZE, c, a, b);
+				}
+			}
 
+			for (int i = 0; i < threads.length; i++) {
+				threads[i].start();
+			}
+			
+			for (int i = 0; i < threads.length; i++) {
+				try {
+					threads[i].join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			stopTime = System.currentTimeMillis();
 
 			elapsedTime += (stopTime - startTime);

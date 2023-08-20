@@ -24,7 +24,7 @@ public class Example04 {
 	}
 
 	public int calculate() {
-		int result = 0;
+		int result;
 
 		result = array[0]; 
 		for (int i = 1; i < array.length; i++) {
@@ -41,14 +41,14 @@ public class Example04 {
 		long startTime, stopTime;
 		double elapsedTime;
 
-		Utils.randomArray(array);
+		Utils.fillArray(array);
 		Utils.displayArray("array", array);
 
 		Example04 obj = new Example04(array);
 
 		elapsedTime = 0;
 		System.out.printf("Starting...\n");
-		for (int i = 0; i < Utils.N; i++) {
+		for (int j = 0; j < Utils.N; j++) {
 			startTime = System.currentTimeMillis();
 
 			result = obj.calculate();

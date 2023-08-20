@@ -54,7 +54,7 @@ public class Example03 {
 		System.out.printf("Starting...\n");
 		elapsedTime = 0;
 		Example03 obj = new Example03(m, b, c);
-		for (int i = 0; i < Utils.N; i++) {
+		for (int j = 0; j < Utils.N; j++) {
 			startTime = System.currentTimeMillis();
 
 			obj.doTask();

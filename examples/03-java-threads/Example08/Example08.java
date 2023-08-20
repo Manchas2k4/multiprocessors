@@ -2,12 +2,10 @@
 //	
 // File: Example08.java
 // Author: Pedro Perez
-// Description: This file implements the merge sort algorithm. The
-//				time this implementation takes will be used as the
-//				basis to calculate the improvement obtained with
-//				parallel technologies.
+// Description: This file implements the merge sort algorithm using 
+//				Java's Threads.
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.
+// Copyright (c) 2023 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
@@ -15,13 +13,16 @@
 
 import java.util.Arrays;
 
-public class Example08 {
+public class Example08 extends Thread {
 	private static final int SIZE = 100_000_000;
-	private int A[], B[];
+	private int A[], B[], start, end, depth;
 
-	public Example08(int A[]) {
+	public Example08(int start, int end, int depth, int A[], int B[]) {
+		this.start = start;
+		this.end = end;
+		this.depth = depth;
 		this.A = A;
-		this.B = new int[A.length];
+		this.B = B;
 	}
 
 	private void swap(int a[], int i, int j) {
@@ -60,27 +61,36 @@ public class Example08 {
 		}
 	}
 
-	private void split(int low, int high) {
-		int  mid, size, i, j;
+	public void run() {
+		Example08 left, right;
 
-		if ((high - low + 1) == 1) {
-			return;
+		if (depth == 0) {
+			(new MergeSort(start, end, A, B)).doTask();
+		} else {
+			int mid = start + ((end - start) / 2);
+			
+			left = new Example08(start, mid, depth - 1, A, B);
+			left.start();
+
+			right = new Example08(mid + 1, end, depth - 1, A, B);
+			right.start();
+
+			try {
+				left.join(); right.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			merge(start, mid, end);
+			copyArray(start, end);
 		}
-
-		mid = low + ((high - low) / 2);
-		split(low, mid);
-		split(mid + 1, high);
-		merge(low, mid, high);
-		copyArray(low, high);
-	}
-
-	public void doTask() {
-		split(0, A.length - 1);
 	}
 
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
-		int aux[] = new int[SIZE];
+		int A[] = new int[SIZE];
+		int B[] = new int[SIZE];
+		int depth;
 		long startTime, stopTime;
 		double elapsedTime;
 		Example08 obj = null;
@@ -88,21 +98,30 @@ public class Example08 {
 		Utils.randomArray(array);
 		Utils.displayArray("before", array);
 
+		depth = (int) ((Math.log(Utils.MAXTHREADS) * 2) / Math.log(2));
+
 		System.out.printf("Starting...\n");
 		elapsedTime = 0;
 		for (int j = 0; j < Utils.N; j++) {
-			System.arraycopy(array, 0, aux, 0, array.length);
+			System.arraycopy(array, 0, A, 0, array.length);
 
 			startTime = System.currentTimeMillis();
 
-			obj = new Example08(aux);
-			obj.doTask();
+			obj = new Example08(0, A.length - 1, depth, A, B);
+
+			obj.start();
+
+			try {
+				obj.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
 			stopTime = System.currentTimeMillis();
 
 			elapsedTime += (stopTime - startTime);
 		}
-		Utils.displayArray("after", aux);
+		Utils.displayArray("after", A);
 		System.out.printf("avg time = %.5f\n", (elapsedTime / Utils.N));
 	}
 }

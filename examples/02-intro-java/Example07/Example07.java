@@ -56,7 +56,7 @@ public class Example07 {
 		dest[(ren * width) + col] = dpixel;
 	}
 
-	void doTask() {
+	public void doTask() {
 		int index, size;
 		int ren, col;
 
@@ -90,7 +90,7 @@ public class Example07 {
 
 		System.out.printf("Starting...\n");
 		elapsedTime = 0;
-		for (int i = 0; i < Utils.N; i++) {
+		for (int j = 0; j < Utils.N; j++) {
 			startTime = System.currentTimeMillis();
 
 			obj.doTask();

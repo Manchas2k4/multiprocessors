@@ -1,11 +1,11 @@
 // =================================================================
 //
-// File: Example10.java
+// File: Example07.java
 // Author: Pedro Perez
 // Description: This file implements the code that blurs a given
 //				image using Java's Threads.
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.
+// Copyright (c) 2022 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
@@ -16,17 +16,17 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 
-public class Example10 extends Thread{
+public class Example07 extends Thread {
 	private static final int BLUR_WINDOW = 15;
 	private int src[], dest[], width, height, start, end;
 
-	public Example10(int src[], int dest[], int width, int height, int start, int end) {
+	public Example07(int start, int end, int src[], int dest[], int width, int height) {
+		this.start = start;
+		this.end = end;
 		this.src = src;
 		this.dest = dest;
 		this.width = width;
 		this.height = height;
-		this.start = start;
-		this.end = end;
 	}
 
 	private void blurPixel(int ren, int col) {
@@ -57,8 +57,10 @@ public class Example10 extends Thread{
 	}
 
 	public void run() {
-		int index, ren, col;
+		int index, size;
+		int ren, col;
 
+		size = width * height;
 		for (index = start; index < end; index++) {
 			ren = index / width;
 			col = index % width;
@@ -68,9 +70,9 @@ public class Example10 extends Thread{
 
 	public static void main(String args[]) throws Exception {
 		long startTime, stopTime;
-		double ms;
-		Example10 threads[];
-		int src[], dest[], w, h, block;
+		double elapsedTime;
+		int blockSize;
+		Example07 threads[];
 
 		if (args.length != 1) {
 			System.out.println("usage: java Example10 image_file");
@@ -81,31 +83,34 @@ public class Example10 extends Thread{
 		File srcFile = new File(fileName);
         final BufferedImage source = ImageIO.read(srcFile);
 
-		w = source.getWidth();
-		h = source.getHeight();
-		src = source.getRGB(0, 0, w, h, null, 0, w);
-		dest = new int[src.length];
+		int w = source.getWidth();
+		int h = source.getHeight();
+		int src[] = source.getRGB(0, 0, w, h, null, 0, w);
+		int dest[] = new int[src.length];
 
-		block = (w * h) / Utils.MAXTHREADS;
-		threads = new Example10[Utils.MAXTHREADS];
+		int size = source.getWidth() * source.getHeight();
+		blockSize = size / Utils.MAXTHREADS;
+		threads = new Example07[Utils.MAXTHREADS];
 
-		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
-		ms = 0;
-		for (int j = 1; j <= Utils.N; j++) {
+		System.out.printf("Starting...\n");
+		elapsedTime = 0;
+		for (int j = 0; j < Utils.N; j++) {
+			startTime = System.currentTimeMillis();
+
 			for (int i = 0; i < threads.length; i++) {
 				if (i != threads.length - 1) {
-					threads[i] = new Example10(src, dest, w, h,
-										(i * block), ((i + 1) * block));
+					threads[i] = 
+					new Example07((i * blockSize), ((i + 1) * blockSize), src, dest, w, h);
 				} else {
-					threads[i] = new Example10(src, dest, w, h,
-										(i * block), (w * h));
+					threads[i] = 
+					new Example07((i * blockSize), size, src, dest, w, h);
 				}
 			}
 
-			startTime = System.currentTimeMillis();
 			for (int i = 0; i < threads.length; i++) {
 				threads[i].start();
 			}
+			
 			for (int i = 0; i < threads.length; i++) {
 				try {
 					threads[i].join();
@@ -113,10 +118,12 @@ public class Example10 extends Thread{
 					e.printStackTrace();
 				}
 			}
+
 			stopTime = System.currentTimeMillis();
-			ms +=  (stopTime - startTime);
+
+			elapsedTime += (stopTime - startTime);
 		}
-		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
+		System.out.printf("avg time = %.5f\n", (elapsedTime / Utils.N));
 		final BufferedImage destination = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		destination.setRGB(0, 0, w, h, dest, 0, w);
 
