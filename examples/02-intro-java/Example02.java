@@ -15,7 +15,7 @@
 // =================================================================
 
 public class Example02 {
-	private static final int SIZE = 770_000_000;
+	private static final int SIZE = 300_000_000;
 	private int array[];
 	private int oldElement, newElement;
 
@@ -35,25 +35,30 @@ public class Example02 {
 
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
+		int aux[] = new int[SIZE];
 		long startTime, stopTime;
 		double elapsedTime = 0;
 
-		Utils.fillArray(array);
+		for (int i = 0; i < array.length; i++) {
+			array[i] = 1;
+		}
 		Utils.displayArray("before", array);
 
-		Example02 obj = new Example02(array, 1, -1);
 		elapsedTime = 0;
 		System.out.printf("Starting...\n");
 		for (int j = 0; j < Utils.N; j++) {
+			System.arraycopy(array, 0, aux, 0, array.length);
+			
 			startTime = System.currentTimeMillis();
 
+			Example02 obj = new Example02(aux, 1, -1);
 			obj.doTask();
 
 			stopTime = System.currentTimeMillis();
 
 			elapsedTime += (stopTime - startTime);
 		}
-		Utils.displayArray("after", array);
+		Utils.displayArray("after", aux);
 		System.out.printf("avg time = %.5f ms\n", (elapsedTime / Utils.N));
 	}
 }

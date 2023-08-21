@@ -13,7 +13,7 @@
 // =================================================================
 
 public class Example02 extends Thread {
-	private static final int SIZE = 770_000_000;
+	private static final int SIZE = 300_000_000;
 	private int array[];
 	private int oldElement, newElement, start, end;
 
@@ -35,12 +35,15 @@ public class Example02 extends Thread {
 
 	public static void main(String args[]) {
 		int array[] = new int[SIZE];
+		int aux[] = new int[SIZE];
 		long startTime, stopTime;
 		double elapsedTime = 0;
 		int blockSize;
 		Example02 threads[];
 
-		Utils.fillArray(array);
+		for (int i = 0; i < array.length; i++) {
+			array[i] = 1;
+		}
 		Utils.displayArray("before", array);
 
 		blockSize = SIZE / Utils.MAXTHREADS;
@@ -49,14 +52,16 @@ public class Example02 extends Thread {
 		elapsedTime = 0;
 		System.out.printf("Starting...\n");
 		for (int j = 0; j < Utils.N; j++) {
+			System.arraycopy(array, 0, aux, 0, array.length);
+			
 			startTime = System.currentTimeMillis();
 
 			for (int i = 0; i < threads.length; i++) {
 				if (i != threads.length - 1) {
 					threads[i] = 
-					new Example02((i * blockSize), ((i + 1) * blockSize), array, 1, -1);
+					new Example02((i * blockSize), ((i + 1) * blockSize), aux, 1, -1);
 				} else {
-					threads[i] = new Example02((i * blockSize), SIZE, array, 1, -1);
+					threads[i] = new Example02((i * blockSize), SIZE, aux, 1, -1);
 				}
 			}
 
@@ -71,9 +76,12 @@ public class Example02 extends Thread {
 					e.printStackTrace();
 				}
 			}
+			
 			stopTime = System.currentTimeMillis();
+			
+			elapsedTime += (stopTime - startTime);
 		}
-		Utils.displayArray("after", array);
+		Utils.displayArray("after", aux);
 		System.out.printf("avg time = %.5f ms\n", (elapsedTime / Utils.N));
 	}
 }

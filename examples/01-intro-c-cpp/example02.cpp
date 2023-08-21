@@ -17,6 +17,7 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <cstring>
 #include "utils.h"
 
 using namespace std;
@@ -35,29 +36,35 @@ void replace(int *array, int size, int x, int y) {
 }
 
 int main(int argc, char* argv[]) {
-	int *array;
+	int *array, *aux;
 
 	// These variables are used to keep track of the execution time.
 	high_resolution_clock::time_point start, end;
 	double timeElapsed;
 
 	array = new int[SIZE];
-	fill_array(array, SIZE);
+	for (int i = 0; i < SIZE; i++) {
+		array[i] = 1;
+	}
 	display_array("before", array);
+	
+	aux = new int[SIZE];
 
 	cout << "Starting...\n";
 	timeElapsed = 0;
 	for (int j = 0; j < N; j++) {
+		memcpy(aux, array, sizeof(int) * SIZE);
+		
 		start = high_resolution_clock::now();
 
-		replace(array, SIZE, 1, -1);
+		replace(aux, SIZE, 1, -1);
 
 		end = high_resolution_clock::now();
 		timeElapsed += 
 			duration<double, std::milli>(end - start).count();
 	}
 	
-	display_array("after", array);
+	display_array("after", aux);
 	cout << "avg time = " << fixed << setprecision(3) 
 		 << (timeElapsed / N) <<  " ms\n";
 
