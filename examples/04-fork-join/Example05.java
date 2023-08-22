@@ -3,7 +3,7 @@
 // File: Example05.java
 // Author: Pedro Perez
 // Description: This file contains the approximation of Pi using the 
-//				Monte-Carlo method using Java's Threads.
+//				Monte-Carlo method using Java's Fork-Join technology.
 //
 // Reference:
 //	https://www.geogebra.org/m/cF7RwK3H
@@ -13,25 +13,27 @@
 // purpose.
 //
 // =================================================================
-import java.util.Random;
 
-public class Example05 extends Thread {
+import java.util.Random;
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.ForkJoinPool;
+
+public class Example05 extends RecursiveTask<Integer> {
 	private static final int INTERVAL = 100_000;
-	private static final int NUMBER_OF_POINTS = INTERNAL * INTERNAL;
+	private static final int NUMBER_OF_POINTS = INTERVAL * INTERVAL;
+	private static final int MIN = 10_000;
 	private int start, end;
-	public int count;
 	
 	public Example05(int start, int end) {
 		this.start = start;
 		this.end = end;
-		this.count = 0;
 	}
 
-	public void run() {
+	private Integer computeDirectly() {
 		double x, y, dist;
 		Random random = new Random();
+		int count = 0;
 
-		count = 0;
 		for (int i = start; i < end; i++) {
 			x = (random.nextDouble() * 2) - 1;
 			y = (random.nextDouble() * 2) - 1;
@@ -40,44 +42,35 @@ public class Example05 extends Thread {
 				count++;
 			}
 		}
+		return count;
+	}
+
+	@Override
+	protected Integer compute() {
+		if ( (end - start) <= MIN ) {
+			return computeDirectly();
+		} else {
+			int mid = start + ( (end - start) / 2 );
+			Example05 lowerMid = new Example05(start, mid);
+			lowerMid.fork();
+			Example05 upperMid = new Example05(mid, end);
+			return upperMid.compute() + lowerMid.join();
+		}
 	}
 
 	public static void main(String args[]) {
 		long startTime, stopTime;
 		double elapsedTime, result = 0;
-		int blockSize, count = 0;
-		Example05 threads[];
-
-		blockSize = NUMBER_OF_POINTS / Utils.MAXTHREADS;
-		threads = new Example05[Utils.MAXTHREADS];
+		int count = 0;
+		ForkJoinPool pool;
 
 		elapsedTime = 0;
 		System.out.printf("Starting...\n");
 		for (int j = 0; j < Utils.N; j++) {
 			startTime = System.currentTimeMillis();
 
-			for (int i = 0; i < threads.length; i++) {
-				if (i != threads.length - 1) {
-					threads[i] = 
-					new Example05((i * blockSize), ((i + 1) * blockSize));
-				} else {
-					threads[i] = new Example05((i * blockSize), NUMBER_OF_POINTS);
-				}
-			}
-
-			for (int i = 0; i < threads.length; i++) {
-				threads[i].start();
-			}
-			
-			count = 0;
-			for (int i = 0; i < threads.length; i++) {
-				try {
-					threads[i].join();
-					count += threads[i].count;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+			pool = new ForkJoinPool(Utils.MAXTHREADS);
+			count = pool.invoke(new Example05(0, NUMBER_OF_POINTS));
 
 			stopTime = System.currentTimeMillis();
 

@@ -1,34 +1,37 @@
 // =================================================================
 //
-// File: Example2.java
+// File: Example04.java
 // Author: Pedro Perez
 // Description: This file contains the code that searches for the
-// 				smallest value stored in an array using Java's
-//				Fork-Join.
+// 				smallest value stored in an array using Java's 
+//				Fork-Join technology.
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.
+// Copyright (c) 2023 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
 // =================================================================
+
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.ForkJoinPool;
 
-public class Example2 extends RecursiveTask<Integer> {
-	private static final int SIZE = 100_000_000;
+public class Example04 extends RecursiveTask<Integer> {
+	private static final int SIZE = 700_000_000;
 	private static final int MIN = 10_000;
 	private int array[], start, end;
-
-	public Example2(int array[], int start, int end) {
-		this.array = array;
+	
+	public Example04(int start, int end, int array[]) {
 		this.start = start;
 		this.end = end;
+		this.array = array;
 	}
 
-	public Integer computeDirectly() {
-		int result = Integer.MAX_VALUE;
+	private Integer computeDirectly() {
+		int result = array[start]; 
 		for (int i = start; i < end; i++) {
-			result = (int) Math.min(result, array[i]);
+			if (array[i] < result) {
+				result = array[i];
+			}
 		}
 		return result;
 	}
@@ -39,39 +42,36 @@ public class Example2 extends RecursiveTask<Integer> {
 			return computeDirectly();
 		} else {
 			int mid = start + ( (end - start) / 2 );
-			Example2 lowerMid = new Example2(array, start, mid);
+			Example04 lowerMid = new Example04(start, mid, array);
 			lowerMid.fork();
-			Example2 upperMid = new Example2(array, mid, end);
+			Example04 upperMid = new Example04(mid, end, array);
 			return ((int) Math.min(upperMid.compute(), lowerMid.join()));
 		}
 	}
 
 	public static void main(String args[]) {
+		int array[] = new int[SIZE];
+		int result = 0;
 		long startTime, stopTime;
-		int array[], result = 0;
-		double ms;
+		double elapsedTime;
 		ForkJoinPool pool;
 
-		array = new int[SIZE];
-		Utils.randomArray(array);
+		Utils.fillArray(array);
 		Utils.displayArray("array", array);
 
-		int pos = Math.abs(Utils.r.nextInt()) % SIZE;
-		System.out.printf("Setting value 0 at %d\n", pos);
-		array[pos] = 0;
-
-		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
-		ms = 0;
-		for (int i = 0; i < Utils.N; i++) {
+		elapsedTime = 0;
+		System.out.printf("Starting...\n");
+		for (int j = 0; j < Utils.N; j++) {
 			startTime = System.currentTimeMillis();
 
 			pool = new ForkJoinPool(Utils.MAXTHREADS);
-			result = pool.invoke(new Example2(array, 0, array.length));
+			result = pool.invoke(new Example04(0, SIZE, array));
 
 			stopTime = System.currentTimeMillis();
-			ms += (stopTime - startTime);
+
+			elapsedTime += (stopTime - startTime);
 		}
 		System.out.printf("result = %d\n", result);
-		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
+		System.out.printf("avg time = %.5f\n ms", (elapsedTime / Utils.N));
 	}
 }

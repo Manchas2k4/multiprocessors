@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class Example05 {
 	private static final int INTERVAL = 100_000;
-	private static final int NUMBER_OF_POINTS = 100_000_000;
+	private static final int NUMBER_OF_POINTS = INTERNAL * INTERNAL;
 	private int numberOfPoints;
 	
 	public Example05(int numberOfPoints) {
@@ -34,8 +34,8 @@ public class Example05 {
 		random = new Random();
 		count = 0;
 		for (int i = 0; i < numberOfPoints; i++) {
-			x = (random.nextInt() % (INTERVAL + 1)) / ((double) INTERVAL);
-			y = (random.nextInt() % (INTERVAL + 1)) / ((double) INTERVAL);
+			x = (random.nextDouble() * 2) - 1;
+			y = (random.nextDouble() * 2) - 1;
 			dist = (x * x) + (y * y);
 			if (dist <= 1) {
 				count++;

@@ -14,7 +14,7 @@
 
 
 public class Example04 extends Thread {
-	private static final int SIZE = 770_000_000;
+	private static final int SIZE = 700_000_000;
 	private int array[], start, end;
 	public int result;
 	
