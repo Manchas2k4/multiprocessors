@@ -16,7 +16,7 @@
 
 
 public class Example04 {
-	private static final int SIZE = 1_000_000_000;
+	private static final int SIZE = 700_000_000;
 	private int array[];
 	
 	public Example04(int array[]) {

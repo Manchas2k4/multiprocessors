@@ -1,19 +1,26 @@
 // =================================================================
 //
-// File: example10.cpp
+// File: example07.cpp
 // Author: Pedro Perez
 // Description: This file implements the code that blurs a given
-//				image. Uses OpenCV and OpenMP, to compile:
-//				g++ example10.cpp `pkg-config --cflags --libs opencv4` -fopenmp
+//				image using the OpenMP technology.. Uses OpenCV, 
+//				to compile:
+//				g++ example07.cpp `pkg-config --cflags --libs opencv4` -fopenmp
 //
-// Copyright (c) 2020 by Tecnologico de Monterrey.
+//				The time this implementation takes will be used as the
+//				basis to calculate the improvement obtained with
+//				parallel technologies.
+//
+// Copyright (c) 2022 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
 // =================================================================
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <iomanip>
+#include <chrono>
+#include <omp.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -23,6 +30,11 @@
 #include "utils.h"
 
 #define BLUR_WINDOW 15
+
+typedef enum color {BLUE, GREEN, RED} Color;
+
+using namespace std;
+using namespace std::chrono;
 
 void blur_pixel(cv::Mat &src, cv::Mat &dest, int ren, int col) {
 	int side_pixels, cells;
@@ -34,8 +46,8 @@ void blur_pixel(cv::Mat &src, cv::Mat &dest, int ren, int col) {
 	r = 0; g = 0; b = 0;
 	for (int i = -side_pixels; i <= side_pixels; i++) {
 		for (int j = -side_pixels; j <= side_pixels; j++) {
-			tmp_ren = MMIN( MMAX(ren + i, 0), src.rows - 1);
-			tmp_col = MMIN( MMAX(col + j, 0), src.cols - 1);
+			tmp_ren = MIN( MAX(ren + i, 0), src.rows - 1);
+			tmp_col = MIN( MAX(col + j, 0), src.cols - 1);
 
 			r += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[RED];
 			g += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[GREEN];
@@ -58,40 +70,46 @@ void blur(cv::Mat &src, cv::Mat &dest) {
 }
 
 int main(int argc, char* argv[]) {
-	int i;
-	double acum;
+	// These variables are used to keep track of the execution time.
+	high_resolution_clock::time_point start, end;
+	double timeElapsed;
 
 	if (argc != 2) {
-		printf("usage: %s source_file\n", argv[0]);
+		cout << "usage: " << argv[0] << " source_file\n";
 		return -1;
 	}
 
 	cv::Mat src = cv::imread(argv[1], cv::IMREAD_COLOR);
 	cv::Mat dest = cv::Mat(src.rows, src.cols, CV_8UC3);
 	if (!src.data) {
-		printf("Could not load image file: %s\n", argv[1]);
+		cout << "Could not load image file: " << argv[1] << "\n";
 		return -1;
 	}
 
-	printf("Starting...\n");
-	acum = 0;
-	for (i = 0; i < N; i++) {
-		start_timer();
-		blur(src, dest);
-		acum += stop_timer();
-	}
+	cout << "Starting...\n";
+	timeElapsed = 0;
+	for (int j = 0; j < N; j++) {
+		start = high_resolution_clock::now();
 
-	printf("avg time = %.5lf ms\n", (acum / N));
+		blur(src, dest);
+
+		end = high_resolution_clock::now();
+		timeElapsed += 
+			duration<double, std::milli>(end - start).count();
+	}
+	cout << "avg time = " << fixed << setprecision(3) 
+		 << (timeElapsed / N) <<  " ms\n";
 
 	/*
 	cv::namedWindow("Original", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Original", src);
+	cv::imshow("Original", src);
 
 	cv::namedWindow("Blur", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Blur", dest);
+	cv::imshow("Blur", dest);
 
 	cv::waitKey(0);
 	*/
+
 	cv::imwrite("blur.png", dest);
 
 	return 0;

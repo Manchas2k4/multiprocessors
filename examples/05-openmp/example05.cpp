@@ -1,11 +1,11 @@
 // =================================================================
 //
-// File: example05.c
+// File: example05.cpp
 // Author: Pedro Perez
 // Description: This file contains the approximation of Pi using the 
-//				Monte-Carlo method.The time this implementation 
-//				takes will be used as the basis to calculate the 
-//				improvement obtained with parallel technologies.
+//				Monte-Carlo method using the OpenMP technology. 
+//				To compile:
+//				g++ -o app -fopenmp example05.cpp
 //
 // Reference:
 //	https://www.geogebra.org/m/cF7RwK3H
@@ -19,6 +19,7 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <random>
 #include <cstdlib>
 #include <ctime>
 #include "utils.h"
@@ -30,15 +31,16 @@ using namespace std::chrono;
 #define NUMBER_OF_POINTS (INTERVAL * INTERVAL) // 1e8
 
 double aprox_pi(int numberOfPoints) {
-	double x, y, dist;
 	int count;
 
-	srand(time(0));
 	count = 0;
+	#pragma omp parallel for shared(numberOfPoints) reduction(+:count)
 	for (int i = 0; i < numberOfPoints; i++) {
-		x = double(rand() % (INTERVAL + 1)) / ((double) INTERVAL);
-        y = double(rand() % (INTERVAL + 1)) / ((double) INTERVAL);
-		dist = (x * x) + (y * y);
+		default_random_engine generator;
+  		uniform_real_distribution<double> distribution(0.0,1.0);
+		double x = (distribution(generator) * 2) - 1;
+		double y = (distribution(generator) * 2) - 1;
+		double dist = (x * x) + (y * y);
 		if (dist <= 1) {
 			count++;
 		}

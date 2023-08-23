@@ -1,14 +1,11 @@
 // =================================================================
 //
-// File: example05.c
+// File: example06.cpp
 // Author: Pedro Perez
-// Description: This file contains the approximation of Pi using the 
-//				Monte-Carlo method.The time this implementation 
-//				takes will be used as the basis to calculate the 
-//				improvement obtained with parallel technologies.
-//
-// Reference:
-//	https://www.geogebra.org/m/cF7RwK3H
+// Description: This file contains the code to perform the numerical
+//				integration of a function within a defined interval 
+//				using the OpenMP technology. To compile:
+//				g++ -o app -fopenmp example06.cpp
 //
 // Copyright (c) 2023 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -18,47 +15,50 @@
 
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 #include <chrono>
-#include <cstdlib>
-#include <ctime>
+#include <cmath>
+#include <omp.h>
 #include "utils.h"
 
 using namespace std;
 using namespace std::chrono;
 
-#define INTERVAL 		 10000//1e4
-#define NUMBER_OF_POINTS (INTERVAL * INTERVAL) // 1e8
+#define PI 3.14159265
+#define RECTS 100000000 //1e8
 
-double aprox_pi(int numberOfPoints) {
-	double x, y, dist;
-	int count;
+double square(double x) {
+	return x * x;
+}
 
-	srand(time(0));
-	count = 0;
-	for (int i = 0; i < numberOfPoints; i++) {
-		x = double(rand() % (INTERVAL + 1)) / ((double) INTERVAL);
-        y = double(rand() % (INTERVAL + 1)) / ((double) INTERVAL);
-		dist = (x * x) + (y * y);
-		if (dist <= 1) {
-			count++;
-		}
+double integration(int rects, double x, double dx, double (*fn) (double)) {
+	double acum;
+
+	acum = 0;
+	#pragma omp parallel for shared(rects, x, dx, fn) reduction(+:acum)
+	for (int i = 0; i < rects; i++) {
+		acum += fn(x + (i * dx));
 	}
-	return ((double) (4.0 * count)) / ((double) numberOfPoints);
+	acum = acum * dx;
+	return acum;
 }
 
 int main(int argc, char* argv[]) {
-	double result;
-	
+	double result, x, dx;
+
 	// These variables are used to keep track of the execution time.
 	high_resolution_clock::time_point start, end;
 	double timeElapsed;
+
+	x = 0;
+	dx = PI / RECTS;
 
 	cout << "Starting...\n";
 	timeElapsed = 0;
 	for (int j = 0; j < N; j++) {
 		start = high_resolution_clock::now();
 
-		result = aprox_pi(NUMBER_OF_POINTS);
+		result = integration(RECTS, 0, dx, sin);
 
 		end = high_resolution_clock::now();
 		timeElapsed += 
