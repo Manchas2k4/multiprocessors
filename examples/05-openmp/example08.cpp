@@ -25,7 +25,7 @@ using namespace std;
 using namespace std::chrono;
 
 #define SIZE	10000000 //1e7
-#define GRAIN	10000 //1e3
+#define GRAIN	10000 //1e4
 
 void swap(int *a, int i, int j) {
 	int aux = a[i];
