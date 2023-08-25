@@ -7,10 +7,6 @@
 //				to compile:
 //				g++ example07.cpp `pkg-config --cflags --libs opencv4` -fopenmp
 //
-//				The time this implementation takes will be used as the
-//				basis to calculate the improvement obtained with
-//				parallel technologies.
-//
 // Copyright (c) 2022 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
