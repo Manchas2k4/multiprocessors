@@ -3,7 +3,8 @@
 // File: example03.cpp
 // Author: Pedro Perez
 // Description: This file implements the multiplication of a matrix
-//				by a vector using the OpenMP technology.
+//				by a vector using the TBB technology. To compile:
+//				g++ example03.cpp -o app -I/usr/local/lib/tbb/include -L/usr/local/lib/tbb/lib/intel64/gcc4.4 -ltbb
 //
 // Copyright (c) 2023 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -14,25 +15,35 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
-#include <omp.h>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_for.h>
 #include "utils.h"
 
 using namespace std;
 using namespace std::chrono;
+using namespace tbb;
 
 #define RENS 10000
 #define COLS 10000
 
-void matrix_vector(int *m, int *b, int *c) {
-	#pragma omp parallel for shared(m, b, c)
-	for (int i = 0; i < RENS; i++) {
-		int acum = 0;
-		for (int j = 0; j < COLS; j++) {
-			acum += (m[(i * COLS) + j] * b[i]);
+class MultVectMat {
+private:
+	int *matrix, *vectorB, * vectorC;
+
+public:
+	MultVectMat(int *m, int *b, int *c) 
+		: matrix(m), vectorB(b), vectorC(c) {}
+
+	void operator() (const blocked_range<int> &r) const {
+		for (int i = r.begin(); i != r.end(); i++) {
+			int acum = 0;
+			for (int j = 0; j < COLS; j++) {
+				acum += (matrix[(i * COLS) + j] * vectorB[i]);
+			}
+			vectorC[i] = acum;
 		}
-		c[i] = acum;
 	}
-}
+};
 
 int main(int argc, char* argv[]) {
 	int *m, *b, *c;
@@ -57,7 +68,7 @@ int main(int argc, char* argv[]) {
 	for (int j = 0; j < N; j++) {
 		start = high_resolution_clock::now();
 
-		matrix_vector(m, b, c);
+		parallel_for(blocked_range<int>(0, RENS),  MultVectMat(m, b, c));
 
 		end = high_resolution_clock::now();
 		timeElapsed += 

@@ -3,10 +3,9 @@
 // File: exercise02.cpp
 // Author(s):
 // Description: This file contains the code to brute-force all
-//				prime numbers less than MAXIMUM. The time this
-//				implementation takes will be used as the basis to
-//				calculate the improvement obtained with parallel
-//				technologies.
+//				prime numbers less than MAXIMUM using the TBB 
+//				technology. To compile:
+//				g++ exercise02.cpp -o app -I/usr/local/lib/tbb/include -L/usr/local/lib/tbb/lib/intel64/gcc4.4 -ltbb
 //
 // Reference:
 // 	Read the document "exercise02.pdf"
@@ -20,10 +19,13 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_reduce.h>
 #include "utils.h"
 
 using namespace std;
 using namespace std::chrono;
+using namespace tbb;
 
 #define MAXIMUM 1000001 //1e6
 

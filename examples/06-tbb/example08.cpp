@@ -2,12 +2,11 @@
 //
 // File: example08.cpp
 // Author: Pedro Perez
-// Description: This file implements the merge sort algorithm. The
-//				time this implementation takes will be used as the
-//				basis to calculate the improvement obtained with
-//				parallel technologies.
+// Description: This file implements the merge sort algorithm using 
+//				the TBB technology. To compile:
+//				g++ example08.cpp -o app -I/usr/local/lib/tbb/include -L/usr/local/lib/tbb/lib/intel64/gcc4.4 -ltbb
 //
-// Copyright (c) 2022 by Tecnologico de Monterrey.
+// Copyright (c) 2023 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
@@ -19,12 +18,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <cstring>
+#include <tbb/parallel_invoke.h>
 #include "utils.h"
 
 using namespace std;
 using namespace std::chrono;
+using namespace tbb;
 
 #define SIZE 	10000000 //1e7
+#define GRAIN	10000 	 //1e4
 
 void swap(int *a, int i, int j) {
 	int aux = a[i];
@@ -61,7 +63,7 @@ void merge(int *A, int *B, int low, int mid, int high) {
     }
 }
 
-void split(int *A, int *B, int low, int high) {
+void sequential_split(int *A, int *B, int low, int high) {
     int  mid, size, i, j;
 
 	if ((high - low + 1) == 1) {
@@ -69,15 +71,35 @@ void split(int *A, int *B, int low, int high) {
 	}
 
     mid = low + ((high - low) / 2);
-    split(A, B, low, mid);
-    split(A, B, mid +1, high);
+    sequential_split(A, B, low, mid);
+    sequential_split(A, B, mid +1, high);
     merge(A, B,low, mid, high);
     copy_array(A, B, low, high);
 }
 
-void merge_sort(int *A, int size) {
+void merge_sort(int *A, int *B, int low, int high) {
+	sequential_split(A, B, low, high);
+}
+
+void parallel_split(int *A, int *B, int low, int high) {
+    int  mid, size, i, j;
+
+	if ((high - low + 1) < GRAIN) {
+		merge_sort(A, B, low, high);
+	} else {
+		mid = low + ((high - low) / 2);
+		parallel_invoke (
+			[=] { parallel_split(A, B, low, mid); },
+			[=] { parallel_split(A, B, mid + 1, high); }
+		);
+		merge(A, B,low, mid, high);
+		copy_array(A,B, low, high);
+	}
+}
+
+void parallel_merge_sort(int *A, int size) {
 	int *B = new int[size];
-	split(A, B, 0, size - 1);
+	parallel_split(A, B, 0, size - 1);
 	delete [] B;
 }
 
@@ -101,7 +123,7 @@ int main(int argc, char* argv[]) {
 
 		start = high_resolution_clock::now();
 
-		merge_sort(aux, SIZE);
+		parallel_merge_sort(aux, SIZE);
 
 		end = high_resolution_clock::now();
 		timeElapsed += 

@@ -3,10 +3,9 @@
 // File: example04.cpp
 // Author: Pedro Perez
 // Description: This file implements the algorithm to find the 
-//				minimum value in an array. The time this 
-//				implementation takes will be used as the basis to 
-//				calculate the improvement obtained with parallel 
-//				technologies.
+//				minimum value in an array using the TBB technology. 
+//				To compile:
+//				g++ example04.cpp -o app -I/usr/local/lib/tbb/include -L/usr/local/lib/tbb/lib/intel64/gcc4.4 -ltbb
 //
 // Copyright (c) 2022 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
@@ -18,36 +17,45 @@
 #include <iomanip>
 #include <chrono>
 #include <climits>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_reduce.h>
 #include "utils.h"
 
 using namespace std;
 using namespace std::chrono;
+using namespace tbb;
 
 #define SIZE 1000000000 // 1e9
 
-int minimum(int *array, int size) {
-	int i, result;
+class MinValue {
+private:
+	int *array;
+	int result;
 
-	result = INT_MAX;
-	#pragma omp parallel
-	{
-		int local_min = result;
-		#pragma omp for nowait
-		for (i = 0; i < size; i++) {
-			if (array[i] < local_min) {
-				local_min = array[i];
-			}
-		}
+public:
+	MinValue(int *a) : array(a), result(0) {}
 
-		#pragma omp critical
-		{
-			if (local_min < result) {
-				result = local_min;
+	MinValue(MinValue &other, split): array(other.array), result(0) {}
+
+	int getResult() const {
+		return result;
+	}
+
+	void operator() (const blocked_range<int> &r) {
+		result = INT_MAX;
+		for (int i = r.begin(); i != r.end(); i++) {
+			if (array[i] < result) {
+				result = array[i];
 			}
 		}
 	}
-	return result;
-}
+
+	void join(const MinValue &other) {
+		if (other.result < result) {
+			result = other.result;
+		}
+	}
+};
 
 int main(int argc, char* argv[]) {
 	int *array, result;
@@ -66,7 +74,9 @@ int main(int argc, char* argv[]) {
 	for (int j = 0; j < N; j++) {
 		start = high_resolution_clock::now();
 
-		result = minimum(array, SIZE);
+		MinValue obj(array);
+		parallel_reduce(blocked_range<int>(0, SIZE), obj);
+		result = obj.getResult();
 
 		end = high_resolution_clock::now();
 		timeElapsed += 

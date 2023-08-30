@@ -3,14 +3,10 @@
 // File: example07.cpp
 // Author: Pedro Perez
 // Description: This file implements the code that blurs a given
-//				image. Uses OpenCV, to compile:
-//				g++ example07.cpp `pkg-config --cflags --libs opencv4`
+//				image using TBB. Uses OpenCV, to compile:
+//				g++ -o app example07.cpp `pkg-config --cflags --libs opencv4` -I/usr/local/lib/tbb/include -L/usr/local/lib/tbb/lib/intel64/gcc4.4 -ltbb
 //
-//				The time this implementation takes will be used as the
-//				basis to calculate the improvement obtained with
-//				parallel technologies.
-//
-// Copyright (c) 2022 by Tecnologico de Monterrey.
+// Copyright (c) 2023 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
 //
@@ -25,6 +21,8 @@
 #include <opencv2/highgui/highgui_c.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_for.h>
 #include "utils.h"
 
 #define BLUR_WINDOW 15
@@ -33,38 +31,47 @@ typedef enum color {BLUE, GREEN, RED} Color;
 
 using namespace std;
 using namespace std::chrono;
+using namespace tbb;
 
-void blur_pixel(cv::Mat &src, cv::Mat &dest, int ren, int col) {
-	int side_pixels, cells;
-	int tmp_ren, tmp_col;
-	float r, g, b;
+class BlurImage {
+private:
+	cv::Mat &src, &dest;
 
-	side_pixels = (BLUR_WINDOW - 1) / 2;
-	cells = (BLUR_WINDOW * BLUR_WINDOW);
-	r = 0; g = 0; b = 0;
-	for (int i = -side_pixels; i <= side_pixels; i++) {
-		for (int j = -side_pixels; j <= side_pixels; j++) {
-			tmp_ren = MIN( MAX(ren + i, 0), src.rows - 1);
-			tmp_col = MIN( MAX(col + j, 0), src.cols - 1);
+	void blurPixel(int ren, int col) const {
+		int side_pixels, cells;
+		int tmp_ren, tmp_col;
+		float r, g, b;
 
-			r += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[RED];
-			g += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[GREEN];
-			b += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[BLUE];
+		side_pixels = (BLUR_WINDOW - 1) / 2;
+		cells = (BLUR_WINDOW * BLUR_WINDOW);
+		r = 0; g = 0; b = 0;
+		for (int i = -side_pixels; i <= side_pixels; i++) {
+			for (int j = -side_pixels; j <= side_pixels; j++) {
+				tmp_ren = MIN( MAX(ren + i, 0), src.rows - 1);
+				tmp_col = MIN( MAX(col + j, 0), src.cols - 1);
+
+				r += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[RED];
+				g += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[GREEN];
+				b += (float) src.at<cv::Vec3b>(tmp_ren, tmp_col)[BLUE];
+			}
 		}
+
+		dest.at<cv::Vec3b>(ren, col)[RED] =  (unsigned char) (r / cells);
+		dest.at<cv::Vec3b>(ren, col)[GREEN] = (unsigned char) (g / cells);
+		dest.at<cv::Vec3b>(ren, col)[BLUE] = (unsigned char) (b / cells);
 	}
 
-	dest.at<cv::Vec3b>(ren, col)[RED] =  (unsigned char) (r / cells);
-	dest.at<cv::Vec3b>(ren, col)[GREEN] = (unsigned char) (g / cells);
-	dest.at<cv::Vec3b>(ren, col)[BLUE] = (unsigned char) (b / cells);
-}
+public:
+	BlurImage(cv::Mat &s, cv::Mat &d) : src(s), dest(d) {}
 
-void blur(cv::Mat &src, cv::Mat &dest) {
-	for(int i = 0; i < src.rows; i++) {
-		for(int j = 0; j < src.cols; j++) {
-			blur_pixel(src, dest, i, j);
+	void operator() (const blocked_range<int> &r) const {
+		for (int i = r.begin(); i != r.end(); i++) {
+			for(int j = 0; j < src.cols; j++) {
+				blurPixel(i, j);
+			}
 		}
 	}
-}
+};
 
 int main(int argc, char* argv[]) {
 	// These variables are used to keep track of the execution time.
@@ -88,7 +95,8 @@ int main(int argc, char* argv[]) {
 	for (int j = 0; j < N; j++) {
 		start = high_resolution_clock::now();
 
-		blur(src, dest);
+		BlurImage obj(src, dest);
+		parallel_for(blocked_range<int>(0, src.rows),  obj);
 
 		end = high_resolution_clock::now();
 		timeElapsed += 

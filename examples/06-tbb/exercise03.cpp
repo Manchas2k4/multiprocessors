@@ -3,10 +3,9 @@
 // File: exercise03.cpp
 // Author(s):
 // Description: This file contains the code that implements the
-//				enumeration sort algorithm. The time this 
-//				implementation takes ill be used as the basis to 
-//				calculate the improvement obtained with parallel 
-//				technologies.
+//				enumeration sort algorithm using the TBB 
+//				technology. To compile:
+//				g++ exercise03.cpp -o app -I/usr/local/lib/tbb/include -L/usr/local/lib/tbb/lib/intel64/gcc4.4 -ltbb
 //
 // Algorithm reference:
 //	https://www.osys.se/Archive/Papers/parallel-sort/node3.html
@@ -20,10 +19,13 @@
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_for.h>
 #include "utils.h"
 
 using namespace std;
 using namespace std::chrono;
+using namespace tbb;
 
 #define SIZE 10000
 

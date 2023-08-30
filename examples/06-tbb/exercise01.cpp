@@ -3,19 +3,22 @@
 // File: exercise01.cpp
 // Author(s):
 // Description: This file contains the code to count the number of
-//				even numbers within an array. The time this implementation
-//				takes will be used as the basis to calculate the
-//				improvement obtained with parallel technologies.
+//				even numbers within an array using the TBB 
+//				technology. To compile:
+//				g++ exercise01.cpp -o app -I/usr/local/lib/tbb/include -L/usr/local/lib/tbb/lib/intel64/gcc4.4 -ltbb
 //
 // =================================================================
 
 #include <iostream>
 #include <iomanip>
 #include <chrono>
+#include <tbb/blocked_range.h>
+#include <tbb/parallel_reduce.h>
 #include "utils.h"
 
 using namespace std;
 using namespace std::chrono;
+using namespace tbb;
 
 // array size
 #define SIZE 1000000000
