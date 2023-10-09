@@ -1,6 +1,6 @@
 // =================================================================
 //
-// File: example05.c
+// File: example05.cpp
 // Author: Pedro Perez
 // Description: This file contains the approximation of Pi using the 
 //				Monte-Carlo method using the TBB technology. To 
