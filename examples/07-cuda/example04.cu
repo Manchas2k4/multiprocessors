@@ -25,7 +25,7 @@ using namespace std::chrono;
 
 #define SIZE 100000000 //1e8
 #define THREADS 512
-#define BLOCKS	max(32, ((SIZE / THREADS) + 1))
+#define BLOCKS	min(32, ((SIZE / THREADS) + 1))
 
 __device__ int minimum(int a, int b) {
     if (a < b) {
@@ -55,7 +55,7 @@ __global__ void minimum(int *array, int *results) {
     int i = blockDim.x / 2;
     while (i > 0) {
         if (cacheIndex < i) {
-            cache[cacheIndex] = minimum(cache[cacheIndex], cache[cacheIndex + 1]);
+            cache[cacheIndex] = minimum(cache[cacheIndex], cache[cacheIndex + i]);
         }
         __syncthreads();
         i /= 2;

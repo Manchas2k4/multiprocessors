@@ -26,7 +26,7 @@ using namespace std::chrono;
 #define PI 3.14159265
 #define RECTS 100000000 //1e8
 #define THREADS 512
-#define BLOCKS	max(32, ((RECTS / THREADS) + 1))
+#define BLOCKS	min(32, ((RECTS / THREADS) + 1))
 
 __global__ void integration(double *x, double *dx, double *results) {
     __shared__ double cache[THREADS];

@@ -89,7 +89,6 @@ void merge_sort(int *array, uint size) {
 			threadCount++;
 		}
 		
-		//gpu_merge<<<1, threadCount>>>(d_array, d_temp, blockSize, last);
 		gpu_merge<<<1, threadCount>>>(A, B, blockSize, last);
 		
 		cudaDeviceSynchronize();
