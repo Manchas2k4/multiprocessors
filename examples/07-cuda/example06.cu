@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <climits>
 #include <cuda_runtime.h>
+#include "math.h"
 #include "utils.h"
 
 using namespace std;
